@@ -1,192 +1,220 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Veil Mining Difficulty</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Veil Mining Difficulty</title>
+  <style>
+    :root{
+      --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
+      --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1100px;margin:auto;padding:24px}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    header{border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--card)}
+    h1{margin:0 0 6px;font-size:22px}
+    .sub{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .pill{display:inline-block;padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px}
+    .btn{border:1px solid var(--border);background:#020617;color:var(--text);padding:9px 12px;border-radius:12px;cursor:pointer}
+    .btn:active{transform:translateY(1px)}
+    canvas{max-width:100%;height:320px}
+    pre{background:#020617;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.4}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Veil Mining Difficulty</h1>
+      <p class="sub">
+        Reads history from <code>data/difficulty.json</code> and renders three difficulty charts.
+      </p>
+    </header>
 
-<style>
-:root{
-  --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
-  --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
-.wrap{max-width:1100px;margin:auto;padding:24px}
-header{border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--card)}
-h1{margin:0 0 6px;font-size:22px}
-.sub{margin:0;color:var(--muted)}
-.card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px;margin-top:14px;overflow:hidden}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-label{display:block;color:var(--muted);font-size:12px;margin:10px 0 6px}
-select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#020617;color:var(--text);max-width:280px}
-.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
-small{color:var(--muted)}
-canvas{width:100% !important;height:360px !important;display:block}
-pre{background:#020617;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.4}
-a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-</style>
+    <div class="grid">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+      <div class="card">
+        <div class="row">
+          <div class="pill" id="status">Loading…</div>
+          <div class="row">
+            <button class="btn" id="refreshBtn">Refresh</button>
+            <a class="btn" href="./index.html" style="display:inline-block;text-decoration:none;">Back to Hub</a>
+          </div>
+        </div>
+      </div>
 
-<script>
-const DATA_URL = "./data/difficulty.json";
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:16px;">RandomX Difficulty</h2>
+        <canvas id="cRx"></canvas>
+      </div>
 
-let charts = {};
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:16px;">ProgPoW Difficulty</h2>
+        <canvas id="cPp"></canvas>
+      </div>
 
-function $(id){ return document.getElementById(id); }
-function parseISO(ts){ return new Date(ts); }
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:16px;">SHA256D Difficulty</h2>
+        <canvas id="cSha"></canvas>
+      </div>
 
-function filterByDays(points, days){
-  if (!days) return points;
-  const cutoff = Date.now() - days * 24*60*60*1000;
-  return points.filter(p => parseISO(p.t).getTime() >= cutoff);
-}
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:16px;">Debug</h2>
+        <pre id="debug">(waiting)</pre>
+      </div>
 
-function toXY(points){
-  return points.map(p => ({ x: parseISO(p.t), y: Number(p.d) }));
-}
+    </div>
 
-function makeChart(canvasId, label, xy){
-  const ctx = $(canvasId);
-  if (charts[canvasId]) charts[canvasId].destroy();
+    <footer>Veil Mining Hub • community-run</footer>
+  </div>
 
-  charts[canvasId] = new Chart(ctx, {
-    type: "line",
-    data: {
-      datasets: [{
-        label,
-        data: xy,
-        pointRadius: 0,
-        borderWidth: 2,
-        tension: 0.15
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      parsing: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { labels: { color: "#e2e8f0" } },
-        tooltip: {
-          callbacks: {
-            label: (c) => `${label}: ${c.parsed.y.toLocaleString()}`
+  <!-- Chart.js (no time adapter needed because we use category labels) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    const DIFF_URL = "./data/difficulty.json";
+    const API_URL  = "https://explorer-api.veil-project.com/api/BlockchainInfo";
+
+    let charts = {};
+
+    function setStatus(msg) {
+      document.getElementById("status").textContent = msg;
+    }
+
+    function fmtTs(iso) {
+      // Keep it readable without any date libs
+      // Example: 2025-12-15T00:00:00Z -> 2025-12-15 00:00
+      return String(iso).replace("T", " ").replace(":00Z", "").replace("Z", "");
+    }
+
+    function normalizeSeries(arr) {
+      // Accept either:
+      // 1) [{t:"ISO", v:number}, ...]
+      // 2) [{time:"ISO", value:number}, ...]
+      // 3) [["ISO", number], ...]
+      if (!Array.isArray(arr)) return [];
+      return arr.map(p => {
+        if (Array.isArray(p) && p.length >= 2) return { t: p[0], v: Number(p[1]) };
+        if (p && typeof p === "object") {
+          const t = p.t ?? p.time ?? p.timestamp ?? p.date;
+          const v = p.v ?? p.value ?? p.difficulty;
+          return { t, v: Number(v) };
+        }
+        return null;
+      }).filter(Boolean).filter(p => p.t && Number.isFinite(p.v));
+    }
+
+    function makeChart(canvasId, label) {
+      const ctx = document.getElementById(canvasId);
+      return new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label,
+            data: [],
+            tension: 0.2,
+            pointRadius: 1.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "category",
+              ticks: { maxRotation: 0, autoSkip: true }
+            },
+            y: {
+              beginAtZero: false
+            }
+          },
+          plugins: {
+            legend: { display: true }
           }
         }
-      },
-      scales: {
-        x: {
-          type: "time",
-          time: { unit: "day" },
-          ticks: { color: "#94a3b8" },
-          grid: { color: "rgba(31,42,68,.6)" }
-        },
-        y: {
-          ticks: { color: "#94a3b8" },
-          grid: { color: "rgba(31,42,68,.6)" }
-        }
+      });
+    }
+
+    async function load() {
+      setStatus("Loading history…");
+      const debug = document.getElementById("debug");
+
+      // 1) Load history JSON from Pages
+      let history;
+      try {
+        const r = await fetch(DIFF_URL, { cache: "no-store" });
+        history = await r.json();
+      } catch (e) {
+        debug.textContent = "Failed to load " + DIFF_URL + "\n" + (e?.message || e);
+        setStatus("Failed to load history JSON");
+        return;
+      }
+
+      // 2) Also fetch live snapshot (so page shows something even if history is empty)
+      let live = null;
+      try {
+        const r2 = await fetch(API_URL, { cache: "no-store" });
+        live = await r2.json();
+      } catch (e) {
+        // optional; ignore
+      }
+
+      const rx  = normalizeSeries(history.randomx);
+      const pp  = normalizeSeries(history.progpow);
+      const sha = normalizeSeries(history.sha256d);
+
+      // If history is empty, we still show a single “live point” (in-memory) if available
+      if (live?.chainInfo) {
+        const t = new Date().toISOString();
+        const dRx  = Number(live.chainInfo.difficulty_randomx);
+        const dPp  = Number(live.chainInfo.difficulty_progpow);
+        const dSha = Number(live.chainInfo.difficulty_sha256d);
+
+        if (rx.length === 0 && Number.isFinite(dRx))   rx.push({ t, v: dRx });
+        if (pp.length === 0 && Number.isFinite(dPp))   pp.push({ t, v: dPp });
+        if (sha.length === 0 && Number.isFinite(dSha)) sha.push({ t, v: dSha });
+      }
+
+      const updated = history.updated ? fmtTs(history.updated) : "(unknown)";
+      const counts = `rx=${rx.length}, progpow=${pp.length}, sha256d=${sha.length}`;
+
+      debug.textContent =
+        "difficulty.json updated: " + updated + "\n" +
+        "points: " + counts + "\n" +
+        "source: " + (history.source || "(none)") + "\n";
+
+      // Create charts once
+      if (!charts.rx) {
+        charts.rx  = makeChart("cRx",  "RandomX difficulty");
+        charts.pp  = makeChart("cPp",  "ProgPoW difficulty");
+        charts.sha = makeChart("cSha", "SHA256D difficulty");
+      }
+
+      function apply(chart, series) {
+        chart.data.labels = series.map(p => fmtTs(p.t));
+        chart.data.datasets[0].data = series.map(p => p.v);
+        chart.update();
+      }
+
+      apply(charts.rx, rx);
+      apply(charts.pp, pp);
+      apply(charts.sha, sha);
+
+      setStatus("Loaded ✓  " + updated + "  (" + counts + ")");
+      if (history.randomx?.length === 0 && history.progpow?.length === 0 && history.sha256d?.length === 0) {
+        setStatus("No history yet — showing live snapshot only. Run the Action once to populate history.");
       }
     }
-  });
-}
 
-function fmtTime(ts){
-  const d = new Date(ts);
-  return isNaN(d.getTime()) ? ts : d.toLocaleString();
-}
-
-function last(points){
-  return points && points.length ? points[points.length - 1] : null;
-}
-
-async function load(){
-  const res = await fetch(DATA_URL, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load ${DATA_URL} (${res.status})`);
-  return res.json();
-}
-
-function render(data){
-  const days = Number($("range").value || 0);
-
-  const rx = filterByDays(data.randomx || [], days);
-  const pp = filterByDays(data.progpow || [], days);
-  const sh = filterByDays(data.sha256d || [], days);
-
-  $("updated").textContent = data.updated ? fmtTime(data.updated) : "unknown";
-  $("source").textContent = data.source || "unknown";
-
-  $("rxNow").textContent = last(rx)?.d?.toLocaleString?.() ?? "—";
-  $("ppNow").textContent = last(pp)?.d?.toLocaleString?.() ?? "—";
-  $("shNow").textContent = last(sh)?.d?.toLocaleString?.() ?? "—";
-
-  makeChart("chart-rx", "RandomX difficulty", toXY(rx));
-  makeChart("chart-pp", "ProgPoW difficulty", toXY(pp));
-  makeChart("chart-sh", "SHA256d difficulty", toXY(sh));
-
-  $("status").textContent = days ? `Showing last ${days} days.` : "Showing all data.";
-}
-
-window.addEventListener("DOMContentLoaded", async () => {
-  try{
-    const data = await load();
-    window.__data = data;
-    render(data);
-    $("range").addEventListener("change", () => render(window.__data));
-    $("raw").textContent = JSON.stringify(data, null, 2);
-  }catch(e){
-    $("status").textContent = "Failed to load difficulty data. (Does data/difficulty.json exist?)";
-    $("raw").textContent = String(e);
-  }
-});
-</script>
-</head>
-
-<body>
-<div class="wrap">
-  <header>
-    <h1>Veil Mining Difficulty</h1>
-    <p class="sub">Community charts generated from periodic samples of the Veil Explorer API.</p>
-  </header>
-
-  <div class="card">
-    <div class="row">
-      <div>
-        <span class="badge">Last updated: <span id="updated">—</span></span>
-        <span class="badge">Source: <span id="source">—</span></span>
-      </div>
-
-      <div style="min-width:220px">
-        <label style="margin:0 0 6px">Time range</label>
-        <select id="range">
-          <option value="0">All</option>
-          <option value="7">Last 7 days</option>
-          <option value="30" selected>Last 30 days</option>
-          <option value="90">Last 90 days</option>
-          <option value="365">Last 365 days</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:10px">
-      <small id="status">—</small>
-      <small>RandomX: <b id="rxNow">—</b> • ProgPoW: <b id="ppNow">—</b> • SHA256d: <b id="shNow">—</b></small>
-    </div>
-
-    <small style="display:block;margin-top:10px">
-      Data file: <a href="./data/difficulty.json" target="_blank" rel="noopener">data/difficulty.json</a>
-    </small>
-  </div>
-
-  <div class="card"><div style="height:360px"><canvas id="chart-rx"></canvas></div></div>
-  <div class="card"><div style="height:360px"><canvas id="chart-pp"></canvas></div></div>
-  <div class="card"><div style="height:360px"><canvas id="chart-sh"></canvas></div></div>
-
-  <div class="card">
-    <small>Raw data (debug)</small>
-    <pre id="raw"></pre>
-  </div>
-</div>
+    document.getElementById("refreshBtn").addEventListener("click", load);
+    load();
+  </script>
 </body>
 </html>
