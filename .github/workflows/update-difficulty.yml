@@ -1,0 +1,80 @@
+name: Update difficulty history
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # every hour
+  push:
+    paths:
+      - ".github/workflows/update-difficulty.yml"
+      - "difficulty.html"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Fetch BlockchainInfo
+        run: |
+          curl -sS -H "accept: application/json" \
+            "https://explorer-api.veil-project.com/api/BlockchainInfo" > api.json
+          jq . api.json >/dev/null
+
+      - name: Update data/difficulty.json
+        run: |
+          mkdir -p data
+          if [ ! -f data/difficulty.json ]; then
+            cat > data/difficulty.json <<'JSON'
+          {
+            "updated": "",
+            "source": "https://explorer-api.veil-project.com/api/BlockchainInfo",
+            "randomx": [],
+            "progpow": [],
+            "sha256d": []
+          }
+          JSON
+          fi
+
+          TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          RX="$(jq -r '.chainInfo.difficulty_randomx' api.json)"
+          PP="$(jq -r '.chainInfo.difficulty_progpow' api.json)"
+          SH="$(jq -r '.chainInfo.difficulty_sha256d' api.json)"
+
+          tmp="$(mktemp)"
+
+          jq \
+            --arg ts "$TS" \
+            --argjson rx "$RX" \
+            --argjson pp "$PP" \
+            --argjson sh "$SH" \
+            '
+            .updated = $ts
+            | .randomx += [{"t":$ts,"d":$rx}]
+            | .progpow += [{"t":$ts,"d":$pp}]
+            | .sha256d += [{"t":$ts,"d":$sh}]
+            | .randomx = (.randomx | if length>2000 then .[-2000:] else . end)
+            | .progpow = (.progpow | if length>2000 then .[-2000:] else . end)
+            | .sha256d = (.sha256d | if length>2000 then .[-2000:] else . end)
+            ' data/difficulty.json > "$tmp"
+
+          mv "$tmp" data/difficulty.json
+
+      - name: Commit & push (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/difficulty.json
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "Update difficulty history"
+          git push
