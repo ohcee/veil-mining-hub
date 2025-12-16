@@ -1,220 +1,280 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Veil Mining Difficulty</title>
-  <style>
-    :root{
-      --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
-      --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:auto;padding:24px}
-    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-    header{border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--card)}
-    h1{margin:0 0 6px;font-size:22px}
-    .sub{margin:0;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
-    .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-    .pill{display:inline-block;padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px}
-    .btn{border:1px solid var(--border);background:#020617;color:var(--text);padding:9px 12px;border-radius:12px;cursor:pointer}
-    .btn:active{transform:translateY(1px)}
-    canvas{max-width:100%;height:320px}
-    pre{background:#020617;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.4}
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Veil Mining Difficulty</title>
+
+<style>
+:root{
+  --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
+  --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+  overflow-y:scroll;   /* IMPORTANT: prevents scrollbar flicker -> resize loop */
+  overflow-x:hidden;
+}
+.wrap{max-width:1100px;margin:auto;padding:24px}
+header{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--card);
+  padding:16px;
+}
+h1{margin:0 0 6px;font-size:22px}
+.sub{margin:0;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.btn{
+  border:1px solid var(--border);
+  background:#020617;
+  color:var(--text);
+  padding:9px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  text-decoration:none;
+}
+.grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+.card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--card);
+  padding:16px;
+  overflow:hidden; /* prevents any inner content from expanding the page */
+}
+.card h3{margin:0 0 10px}
+.small{color:var(--muted);font-size:12px;margin-top:8px}
+.canvasWrap{
+  width:100%;
+  height:320px;        /* fixed height, no growth */
+  background:#020617;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  overflow:hidden;     /* critical */
+}
+canvas{
+  display:block;
+  width:100%;
+  height:100%;
+}
+pre{
+  margin:0;
+  white-space:pre-wrap;
+  background:#020617;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  overflow:auto;
+  max-height:260px;
+  color:#cbd5e1;
+}
+code{color:#cbd5e1}
+footer{margin-top:16px;text-align:center;color:var(--muted);font-size:12px}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Veil Mining Difficulty</h1>
-      <p class="sub">
-        Reads history from <code>data/difficulty.json</code> and renders three difficulty charts.
-      </p>
-    </header>
+<div class="wrap">
 
-    <div class="grid">
+<header>
+  <h1>Veil Mining Difficulty</h1>
+  <p class="sub">Loads <code>./data/difficulty.json</code> and plots difficulty history per algo.</p>
+  <div class="row">
+    <button class="btn" id="refresh">Refresh</button>
+    <a class="btn" href="./index.html">Back</a>
+    <a class="btn" href="./data/difficulty.json" target="_blank" rel="noopener">View JSON</a>
+  </div>
+</header>
 
-      <div class="card">
-        <div class="row">
-          <div class="pill" id="status">Loading…</div>
-          <div class="row">
-            <button class="btn" id="refreshBtn">Refresh</button>
-            <a class="btn" href="./index.html" style="display:inline-block;text-decoration:none;">Back to Hub</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 style="margin:0 0 10px;font-size:16px;">RandomX Difficulty</h2>
-        <canvas id="cRx"></canvas>
-      </div>
-
-      <div class="card">
-        <h2 style="margin:0 0 10px;font-size:16px;">ProgPoW Difficulty</h2>
-        <canvas id="cPp"></canvas>
-      </div>
-
-      <div class="card">
-        <h2 style="margin:0 0 10px;font-size:16px;">SHA256D Difficulty</h2>
-        <canvas id="cSha"></canvas>
-      </div>
-
-      <div class="card">
-        <h2 style="margin:0 0 10px;font-size:16px;">Debug</h2>
-        <pre id="debug">(waiting)</pre>
-      </div>
-
-    </div>
-
-    <footer>Veil Mining Hub • community-run</footer>
+<div class="grid">
+  <div class="card">
+    <h3>RandomX</h3>
+    <div class="canvasWrap"><canvas id="rx"></canvas></div>
+    <div class="small" id="rxNote"></div>
   </div>
 
-  <!-- Chart.js (no time adapter needed because we use category labels) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <div class="card">
+    <h3>ProgPoW</h3>
+    <div class="canvasWrap"><canvas id="pp"></canvas></div>
+    <div class="small" id="ppNote"></div>
+  </div>
 
-  <script>
-    const DIFF_URL = "./data/difficulty.json";
-    const API_URL  = "https://explorer-api.veil-project.com/api/BlockchainInfo";
+  <div class="card">
+    <h3>SHA256d</h3>
+    <div class="canvasWrap"><canvas id="sha"></canvas></div>
+    <div class="small" id="shaNote"></div>
+  </div>
 
-    let charts = {};
+  <div class="card">
+    <h3>Debug</h3>
+    <pre id="debug">Waiting…</pre>
+  </div>
+</div>
 
-    function setStatus(msg) {
-      document.getElementById("status").textContent = msg;
-    }
+<footer>Veil Mining Hub • community-run</footer>
 
-    function fmtTs(iso) {
-      // Keep it readable without any date libs
-      // Example: 2025-12-15T00:00:00Z -> 2025-12-15 00:00
-      return String(iso).replace("T", " ").replace(":00Z", "").replace("Z", "");
-    }
+</div>
 
-    function normalizeSeries(arr) {
-      // Accept either:
-      // 1) [{t:"ISO", v:number}, ...]
-      // 2) [{time:"ISO", value:number}, ...]
-      // 3) [["ISO", number], ...]
-      if (!Array.isArray(arr)) return [];
-      return arr.map(p => {
-        if (Array.isArray(p) && p.length >= 2) return { t: p[0], v: Number(p[1]) };
-        if (p && typeof p === "object") {
-          const t = p.t ?? p.time ?? p.timestamp ?? p.date;
-          const v = p.v ?? p.value ?? p.difficulty;
-          return { t, v: Number(v) };
-        }
-        return null;
-      }).filter(Boolean).filter(p => p.t && Number.isFinite(p.v));
-    }
+<script>
+const DATA_URL = "./data/difficulty.json";
+const dbgEl = document.getElementById("debug");
 
-    function makeChart(canvasId, label) {
-      const ctx = document.getElementById(canvasId);
-      return new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [{
-            label,
-            data: [],
-            tension: 0.2,
-            pointRadius: 1.5
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              type: "category",
-              ticks: { maxRotation: 0, autoSkip: true }
-            },
-            y: {
-              beginAtZero: false
-            }
-          },
-          plugins: {
-            legend: { display: true }
-          }
-        }
-      });
-    }
+function dbg(msg){ dbgEl.textContent = msg; }
 
-    async function load() {
-      setStatus("Loading history…");
-      const debug = document.getElementById("debug");
+function nice(n){
+  if (!Number.isFinite(n)) return "n/a";
+  const a = Math.abs(n);
+  if (a >= 1e12) return (n/1e12).toFixed(2) + "T";
+  if (a >= 1e9)  return (n/1e9).toFixed(2) + "B";
+  if (a >= 1e6)  return (n/1e6).toFixed(2) + "M";
+  if (a >= 1e3)  return (n/1e3).toFixed(2) + "K";
+  if (a !== 0 && a < 0.01) return n.toExponential(4);
+  return String(+n.toFixed(8));
+}
 
-      // 1) Load history JSON from Pages
-      let history;
-      try {
-        const r = await fetch(DIFF_URL, { cache: "no-store" });
-        history = await r.json();
-      } catch (e) {
-        debug.textContent = "Failed to load " + DIFF_URL + "\n" + (e?.message || e);
-        setStatus("Failed to load history JSON");
-        return;
-      }
+// Make canvas pixel-perfect without triggering layout growth.
+function fitCanvasToCSS(canvas){
+  const wrap = canvas.parentElement; // .canvasWrap
+  const rect = wrap.getBoundingClientRect();
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); // cap DPR to avoid huge memory
+  const w = Math.floor(rect.width * dpr);
+  const h = Math.floor(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+  return { w, h, dpr };
+}
 
-      // 2) Also fetch live snapshot (so page shows something even if history is empty)
-      let live = null;
-      try {
-        const r2 = await fetch(API_URL, { cache: "no-store" });
-        live = await r2.json();
-      } catch (e) {
-        // optional; ignore
-      }
+function drawLineChart(canvasId, series, title){
+  const canvas = document.getElementById(canvasId);
+  const { w, h } = fitCanvasToCSS(canvas);
+  const ctx = canvas.getContext("2d");
 
-      const rx  = normalizeSeries(history.randomx);
-      const pp  = normalizeSeries(history.progpow);
-      const sha = normalizeSeries(history.sha256d);
+  // Clear
+  ctx.clearRect(0,0,w,h);
 
-      // If history is empty, we still show a single “live point” (in-memory) if available
-      if (live?.chainInfo) {
-        const t = new Date().toISOString();
-        const dRx  = Number(live.chainInfo.difficulty_randomx);
-        const dPp  = Number(live.chainInfo.difficulty_progpow);
-        const dSha = Number(live.chainInfo.difficulty_sha256d);
+  // Background
+  ctx.fillStyle = "#020617";
+  ctx.fillRect(0,0,w,h);
 
-        if (rx.length === 0 && Number.isFinite(dRx))   rx.push({ t, v: dRx });
-        if (pp.length === 0 && Number.isFinite(dPp))   pp.push({ t, v: dPp });
-        if (sha.length === 0 && Number.isFinite(dSha)) sha.push({ t, v: dSha });
-      }
+  // If no data, show message
+  if (!series.length) {
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = `${Math.max(12, Math.floor(h*0.05))}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+    ctx.fillText("No data points yet.", 16, 32);
+    return;
+  }
 
-      const updated = history.updated ? fmtTs(history.updated) : "(unknown)";
-      const counts = `rx=${rx.length}, progpow=${pp.length}, sha256d=${sha.length}`;
+  // Chart padding
+  const padL = 44, padR = 16, padT = 16, padB = 34;
+  const cw = Math.max(10, w - padL - padR);
+  const ch = Math.max(10, h - padT - padB);
 
-      debug.textContent =
-        "difficulty.json updated: " + updated + "\n" +
-        "points: " + counts + "\n" +
-        "source: " + (history.source || "(none)") + "\n";
+  // Compute min/max
+  let min = Infinity, max = -Infinity;
+  for (const v of series) { if (v < min) min = v; if (v > max) max = v; }
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "14px system-ui";
+    ctx.fillText("Data contains non-numeric values.", 16, 32);
+    return;
+  }
+  if (min === max) { min *= 0.9; max *= 1.1; } // avoid flatline divide-by-zero
 
-      // Create charts once
-      if (!charts.rx) {
-        charts.rx  = makeChart("cRx",  "RandomX difficulty");
-        charts.pp  = makeChart("cPp",  "ProgPoW difficulty");
-        charts.sha = makeChart("cSha", "SHA256D difficulty");
-      }
+  // Grid
+  ctx.strokeStyle = "rgba(255,255,255,.06)";
+  ctx.lineWidth = 1;
 
-      function apply(chart, series) {
-        chart.data.labels = series.map(p => fmtTs(p.t));
-        chart.data.datasets[0].data = series.map(p => p.v);
-        chart.update();
-      }
+  const gridY = 4;
+  for (let i=0;i<=gridY;i++){
+    const y = padT + (ch * i / gridY);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(padL + cw, y);
+    ctx.stroke();
+  }
 
-      apply(charts.rx, rx);
-      apply(charts.pp, pp);
-      apply(charts.sha, sha);
+  // Axes labels (simple)
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  ctx.fillText(nice(max), 8, padT + 10);
+  ctx.fillText(nice(min), 8, padT + ch);
 
-      setStatus("Loaded ✓  " + updated + "  (" + counts + ")");
-      if (history.randomx?.length === 0 && history.progpow?.length === 0 && history.sha256d?.length === 0) {
-        setStatus("No history yet — showing live snapshot only. Run the Action once to populate history.");
-      }
-    }
+  // Line
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 2;
 
-    document.getElementById("refreshBtn").addEventListener("click", load);
-    load();
-  </script>
+  const n = series.length;
+  ctx.beginPath();
+  for (let i=0;i<n;i++){
+    const x = padL + (cw * (n === 1 ? 0 : i / (n - 1)));
+    const t = (series[i] - min) / (max - min);
+    const y = padT + (ch * (1 - t));
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Title / last value
+  ctx.fillStyle = "#e2e8f0";
+  ctx.font = "13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  const last = series[series.length - 1];
+  ctx.fillText(`${title} • last: ${nice(last)} • points: ${series.length}`, padL, h - 12);
+}
+
+async function load(){
+  dbg(`Loading ${DATA_URL} …`);
+
+  let data;
+  try {
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`fetch failed: ${res.status} ${res.statusText}`);
+    data = await res.json();
+  } catch (e) {
+    dbg(`ERROR loading JSON:\n${e && e.stack ? e.stack : e}`);
+    return;
+  }
+
+  // Expected keys: randomx, progpow, sha256d
+  const rx  = Array.isArray(data.randomx) ? data.randomx.map(Number).filter(Number.isFinite) : [];
+  const pp  = Array.isArray(data.progpow) ? data.progpow.map(Number).filter(Number.isFinite) : [];
+  const sha = Array.isArray(data.sha256d) ? data.sha256d.map(Number).filter(Number.isFinite) : [];
+
+  drawLineChart("rx",  rx,  "RandomX");
+  drawLineChart("pp",  pp,  "ProgPoW");
+  drawLineChart("sha", sha, "SHA256d");
+
+  document.getElementById("rxNote").textContent  = `points: ${rx.length}${rx.length ? " • last: " + nice(rx[rx.length-1]) : ""}`;
+  document.getElementById("ppNote").textContent  = `points: ${pp.length}${pp.length ? " • last: " + nice(pp[pp.length-1]) : ""}`;
+  document.getElementById("shaNote").textContent = `points: ${sha.length}${sha.length ? " • last: " + nice(sha[sha.length-1]) : ""}`;
+
+  dbg(
+    `OK\n` +
+    `updated: ${data.updated ?? "(none)"}\n` +
+    `source:  ${data.source ?? "(none)"}\n` +
+    `keys:    ${Object.keys(data).join(", ")}\n\n` +
+    `randomx:  ${rx.length} points\n` +
+    `progpow:  ${pp.length} points\n` +
+    `sha256d:  ${sha.length} points\n`
+  );
+}
+
+document.getElementById("refresh").addEventListener("click", load);
+
+// Redraw once on resize (no loops), debounced
+let resizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(load, 200);
+});
+
+load();
+</script>
 </body>
 </html>
