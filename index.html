@@ -4,45 +4,123 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Veil Mining Hub</title>
+
 <style>
 :root{
   --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
   --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
-  --good:#34d399; --warn:#fbbf24;
+  --good:#34d399; --warn:#fbbf24; --bad:#fb7185;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
 .wrap{max-width:1100px;margin:auto;padding:24px}
-a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
 header{border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--card)}
 h1{margin:0 0 6px;font-size:22px}
 .sub{margin:0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;max-width:100%;overflow-x:hidden;}
+
+.topLinks{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{
+  border:1px solid var(--border);
+  background:#020617;
+  padding:8px 10px;
+  border-radius:999px;
+  font-size:12px;
+  color:var(--text);
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+}
+.dot{width:7px;height:7px;border-radius:999px;background:rgba(56,189,248,.9);display:inline-block}
+.pill small{color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;max-width:100%;overflow-x:hidden}
 @media (max-width: 900px){.grid{grid-template-columns:1fr}}
-.card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px;max-width:100%;overflow:hidden;}
+
+.card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px;max-width:100%;overflow:hidden}
+
 .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border)}
 .good{color:var(--good);border-color:rgba(52,211,153,.4)}
 .warn{color:var(--warn);border-color:rgba(251,191,36,.4)}
+.bad{color:var(--bad);border-color:rgba(251,113,133,.35)}
 small,.muted{color:var(--muted)}
+
 .kv{background:#0b1224;border:1px solid var(--border);border-radius:14px;padding:12px}
 .k{color:var(--muted);font-size:12px}
 .v{margin-top:6px}
+
 label{display:block;color:var(--muted);font-size:12px;margin:10px 0 6px}
-input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#020617;color:var(--text)}
-pre{background:#020617;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.4}
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#020617;
+  color:var(--text)
+}
+
+pre{
+  background:#020617;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  overflow:auto;
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.4
+}
+
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.btn{border:1px solid var(--border);background:#020617;color:var(--text);padding:9px 12px;border-radius:12px;cursor:pointer}
+
+.btn{
+  border:1px solid var(--border);
+  background:#020617;
+  color:var(--text);
+  padding:9px 12px;
+  border-radius:12px;
+  cursor:pointer
+}
 .btn:active{transform:translateY(1px)}
 .btnAccent{border-color:rgba(56,189,248,.45); background:rgba(56,189,248,.08)}
+
 footer{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
 hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+
 code{font-family:var(--mono)}
-input,
-select,
-pre {max-width:100%; min-width: 0;}
-pre {white-space:pre-wrap; word-break:break-word;overflow-wrap: anywhere;}
-input {overflow:hidden;text-overflow:ellipsis;}
+input,select,pre {max-width:100%; min-width: 0;}
+pre {white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere;}
+input {overflow:hidden; text-overflow:ellipsis;}
+
+.notice{
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(56,189,248,.25);
+  background:rgba(56,189,248,.06);
+  color:#bae6fd;
+  font-size:12px;
+  margin-top:10px;
+}
+
+.softwareGrid{display:grid;grid-template-columns: 1fr;gap:10px;margin-top:10px}
+.swItem{border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;background:#0b1224}
+.swTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.swName{font-weight:600}
+.swMeta{color:var(--muted);font-size:12px;margin-top:2px}
+.swLinks a{margin-right:10px;font-size:12px}
+.swTag{display:inline-block;font-size:11px;border:1px solid rgba(255,255,255,.12);padding:3px 8px;border-radius:999px;color:#cbd5e1;background:#020617}
+
+.buildBox{margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#020617;overflow:hidden}
+.buildTabs{display:flex;gap:8px;padding:10px;border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+.tabBtn{
+  font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+  background:#0b1224;color:var(--text);cursor:pointer
+}
+.tabBtn.active{border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.08)}
+.buildBody{padding:10px}
+.buildBody pre{margin:0}
 </style>
 
 <script>
@@ -51,41 +129,107 @@ const DATA = {
     veilMiningPage: "https://veil-project.com/mining/",
     fastpoolRX: "https://fastpool.xyz/veil-rx/",
     yadaPool: "https://veil.yadaminers.pl/",
+    difficulty: "./difficulty.html",
 
-    ohceeXmrigRepo: "https://github.com/ohcee/xmrig",
-    ohceeXmrigRelease: "https://github.com/ohcee/xmrig/releases/tag/v1.0.2-veil",
-    ohceeXmrigLatest: "https://github.com/ohcee/xmrig/releases/latest",
+    trexReleases: "https://github.com/trexminer/t-rex/releases",
+    wildrigReleases: "https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6",
 
-    // Optional alternate builds
-    solflyXmrigReleases: "https://github.com/SolFly/xmrig/releases",
-
-    // SHA256dv miner source
-    cpuminerShaRepo: "https://github.com/Rakni1988/cpuminer-opt-veil"
+    xmrigVeilRepo: "https://github.com/ohcee/xmrig-veil",
+    cpuminerRepo: "https://github.com/Rakni1988/cpuminer-opt-veil",
+    proxyRepo: "https://github.com/ohcee/veil-node-stratum-proxy/tree/Fix-keepalived-error"
   },
 
   pools: [
     {
+      id: "fastpool",
       name: "FastPool (Veil RandomX)",
-      note: "RandomX pool page. Copy the stratum endpoint/port shown there (can change).",
+      note: "FastPool RandomX for Veil. Password is always x. Supports SOLO username format.",
+      url: "https://fastpool.xyz/veil-rx/",
       algos: {
-        randomx: { stratum: "", modeHint: "Paste FastPool's stratum here (example: fastpool.xyz:PORT)" }
-      },
-      url: "https://fastpool.xyz/veil-rx/"
+        randomx: {
+          // port options based on the info you provided
+          ports: [
+            { port: 10281, label: "10281 • Low end hardware • diff 25000", scheme: "stratum+tcp://" },
+            { port: 10282, label: "10282 • Mid end hardware • diff 100000", scheme: "stratum+tcp://" },
+            { port: 10285, label: "10285 • SSL • diff 25000", scheme: "stratum+ssl://" }
+          ]
+        }
+      }
     },
     {
+      id: "yadaminers",
       name: "yadaminers.pl (Multi-algo)",
-      note: "Has Veil mining pages + stratum endpoints. Not affiliated with this hub.",
+      note: "Multi-algo Veil pool with stable stratum ports.",
+      url: "https://veil.yadaminers.pl/",
       algos: {
-        sha256dv: { stratum: "stratum+tcp://veil.yadaminers.pl:3333", modeHint: "PROP: -p x | SOLO: -p solo" },
-        progpow:  { stratum: "stratum+tcp://veil.yadaminers.pl:3334", modeHint: "Typical: -p x or -p solo" },
-        randomx:  { stratum: "stratum+tcp://veil.yadaminers.pl:3335", modeHint: "Veil-RX needs a Veil-compatible XMRig build" }
-      },
-      url: "https://veil.yadaminers.pl/"
+        sha256dv: { stratum: "stratum+tcp://veil.yadaminers.pl:3333", modeHint: "Pool mode: -p x | Solo: -p solo" },
+        progpow:  { stratum: "stratum+tcp://veil.yadaminers.pl:3334", modeHint: "Pool mode: -p x | Solo: -p solo" },
+        randomx:  { stratum: "stratum+tcp://veil.yadaminers.pl:3335", modeHint: "Veil-RX needs Veil-compatible XMRig build" }
+      }
+    }
+  ],
+
+  software: [
+    {
+      name: "T-Rex Miner",
+      algo: "progpow",
+      os: "Windows / Linux",
+      status: "Works",
+      primary: { label: "Releases", url: "https://github.com/trexminer/t-rex/releases" },
+      repo:    { label: "GitHub", url: "https://github.com/trexminer/t-rex" },
+      note: "ProgPoW (GPU). Use the command builder (it fills pool/user/pass)."
+    },
+    {
+      name: "WildRig Multi",
+      algo: "progpow",
+      os: "Windows / Linux",
+      status: "Works",
+      primary: { label: "Release (0.40.6)", url: "https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" },
+      repo:    { label: "GitHub", url: "https://github.com/andru-kun/wildrig-multi" },
+      note: "ProgPoW (GPU). Use the command builder (it fills pool/user/pass)."
+    },
+    {
+      name: "XMRig-VEIL (ohcee)",
+      algo: "randomx",
+      os: "Linux / macOS (Windows build has known issues)",
+      status: "Works (source build)",
+      primary: { label: "Repo", url: "https://github.com/ohcee/xmrig-veil" },
+      repo:    { label: "GitHub", url: "https://github.com/ohcee/xmrig-veil" },
+      note: "RandomX (CPU). Use -a rx/veil. Windows uses artifacts or build yourself."
+    },
+    {
+      name: "cpuminer-opt-veil",
+      algo: "sha256dv",
+      os: "Windows / Linux / macOS",
+      status: "Works (source build)",
+      primary: { label: "Repo", url: "https://github.com/Rakni1988/cpuminer-opt-veil" },
+      repo:    { label: "GitHub", url: "https://github.com/Rakni1988/cpuminer-opt-veil" },
+      note: "SHA256dv (CPU). Build from source. Use -a sha256dv."
+    },
+    {
+      name: "veil-node-stratum-proxy (optional)",
+      algo: "proxy",
+      os: "Linux / macOS",
+      status: "Optional",
+      primary: { label: "Branch", url: "https://github.com/ohcee/veil-node-stratum-proxy/tree/Fix-keepalived-error" },
+      repo:    { label: "GitHub", url: "https://github.com/ohcee/veil-node-stratum-proxy" },
+      note: "Run your own node + proxy to encourage SOLO mining. Build from source."
     }
   ]
 };
 
 function $(id){ return document.getElementById(id); }
+function escapeHtml(s){
+  return String(s || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+function stripStratumScheme(s){
+  let hostPort = (s || "").trim();
+  hostPort = hostPort.replace(/^stratum\+tcp:\/\//i, "");
+  hostPort = hostPort.replace(/^stratum\+ssl:\/\//i, "");
+  return hostPort;
+}
 
 function fillPoolOptions(){
   const sel = $("pool");
@@ -108,72 +252,154 @@ function updateAlgoOptions(){
     opt.textContent = a.toUpperCase();
     algoSel.appendChild(opt);
   });
+
+  // Default algo if current disappears
+  if (![...algoSel.options].some(o => o.value === $("algo").value)) {
+    $("algo").value = algoSel.options[0]?.value || "randomx";
+  }
+
+  // Reset some fields when pool changes
+  $("stratumOverride").value = "";
   buildCmd();
 }
 
-function normalizeStratum(input){
-  const s = (input || "").trim();
-  if (!s) return "";
-  return s;
+function showHideAdvanced(){
+  const pool = DATA.pools[Number($("pool").value)];
+  const algo = $("algo").value;
+
+  // Show ProgPoW miner select only for progpow
+  $("ppMinerRow").style.display = (algo === "progpow") ? "block" : "none";
+
+  // Show threads only for sha
+  $("threadsRow").style.display = (algo === "sha256dv") ? "block" : "none";
+
+  // FastPool specific controls only for FastPool + RandomX
+  const isFastPoolRX = (pool.id === "fastpool" && algo === "randomx");
+  $("fastpoolBox").style.display = isFastPoolRX ? "block" : "none";
+
+  // Username format controls only for FastPool + RandomX
+  $("fpUserBox").style.display = isFastPoolRX ? "block" : "none";
+
+  // Stratum override usually not needed if FastPool ports are selected
+  $("overrideRow").style.display = isFastPoolRX ? "none" : "block";
 }
 
-function stripStratumScheme(s){
-  let hostPort = (s || "").trim();
-  hostPort = hostPort.replace(/^stratum\+tcp:\/\//i, "");
-  hostPort = hostPort.replace(/^stratum\+ssl:\/\//i, "");
-  return hostPort;
+function buildFastPoolStratum(){
+  const pool = DATA.pools[Number($("pool").value)];
+  const algo = $("algo").value;
+  if (!(pool.id === "fastpool" && algo === "randomx")) return "";
+
+  const portIdx = Number($("fpPort").value || "0");
+  const p = pool.algos.randomx.ports[Math.max(0, Math.min(pool.algos.randomx.ports.length - 1, portIdx))];
+
+  // FastPool host is fastpool.xyz
+  return `${p.scheme}fastpool.xyz:${p.port}`;
+}
+
+// Build FastPool username based on their format list
+function buildFastPoolUser(wallet, worker, paymentId, diffLock){
+  const fmt = $("fpUserFmt").value;
+
+  const w = (wallet || "").trim() || "PASTE_YOUR_VEIL_ADDRESS_HERE";
+  const wk = (worker || "").trim();
+  const pid = (paymentId || "").trim();
+  const diff = (diffLock || "").trim();
+
+  // Helpers
+  const withWorker = wk ? `@${wk}` : "";
+  const withPidDot = pid ? `.${pid}` : "";
+  const withPidPlus = pid ? `+${pid}` : "";
+  const withDiff = diff ? `.${diff}` : "";
+
+  switch (fmt) {
+    case "wallet":
+      return w;
+    case "wallet_worker":
+      return wk ? `${w}@${wk}` : w;
+    case "solo_wallet":
+      return `solo:${w}`;
+    case "wallet_diff_worker":
+      // wallet.diff@worker_name
+      // if worker missing, omit @worker (still valid as just wallet.diff)
+      return `${w}${withDiff}${wk ? `@${wk}` : ""}`;
+    case "wallet_pid":
+      // wallet.paymentID
+      return `${w}${withPidDot}`;
+    case "wallet_pid_worker":
+      // wallet+paymentID@worker
+      // if worker missing, omit @worker
+      return `${w}${withPidPlus}${wk ? `@${wk}` : ""}`;
+    default:
+      return w;
+  }
 }
 
 function buildCmd(){
   const pool = DATA.pools[Number($("pool").value)];
   const algo = $("algo").value;
 
-  const wallet = ($("wallet").value || "YOUR_VEIL_ADDRESS").trim();
+  showHideAdvanced();
+
+  const walletRaw = ($("wallet").value || "").trim();
   const worker = ($("worker").value || "").trim();
   const passMode = $("mode").value; // x or solo
   const threads = ($("threads").value || "").trim();
 
-  const user = worker ? `${wallet}.${worker}` : wallet;
-
-  const preset = normalizeStratum(pool.algos[algo]?.stratum || "");
-  const manual = normalizeStratum(($("stratum").value || "").trim());
-  const stratum = manual || preset || "PASTE_STRATUM_ENDPOINT_HERE";
-
-  // ✅ enforce ./ vs .exe
-  const os = $("os").value; // unix or win
+  // Binaries by OS
+  const os = $("os").value;
   const xmrigBin = (os === "win") ? "xmrig.exe" : "./xmrig";
   const cpuminerBin = (os === "win") ? "cpuminer.exe" : "./cpuminer";
+  const trexBin = (os === "win") ? "t-rex.exe" : "./t-rex";
+  const wildrigBin = (os === "win") ? "wildrig.exe" : "./wildrig-multi";
 
-  // XMRig-style prefers host:port (works even if user pasted stratum+tcp://)
-  const hostPort = stripStratumScheme(stratum);
+  const ppMiner = $("ppMiner").value; // trex or wildrig
 
+  // Determine stratum
+  let stratum = "";
+  let modeHint = "";
+
+  if (pool.id === "fastpool" && algo === "randomx") {
+    stratum = buildFastPoolStratum();
+    modeHint = "FastPool password is x. Choose a port based on hardware.";
+  } else {
+    const preset = pool.algos[algo]?.stratum || "";
+    const override = ($("stratumOverride").value || "").trim();
+    stratum = override || preset;
+    modeHint = pool.algos[algo]?.modeHint || "";
+  }
+
+  // Determine username/user based on pool/algo rules
+  let user = "";
+
+  if (pool.id === "fastpool" && algo === "randomx") {
+    const pid = ($("fpPaymentId").value || "").trim();
+    const diff = ($("fpDiff").value || "").trim();
+    user = buildFastPoolUser(walletRaw, worker, pid, diff);
+
+    // FastPool always uses password x (your pasted info)
+    // We'll ignore the mode dropdown for FastPool, but keep it visible for other pools.
+  } else {
+    const wallet = walletRaw || "PASTE_YOUR_VEIL_ADDRESS_HERE";
+    user = worker ? `${wallet}.${worker}` : wallet;
+  }
+
+  // Build command per algo
   let out = "";
 
   if (algo === "randomx") {
-    // ✅ ALWAYS include -a rx/veil and ALWAYS use ./xmrig or xmrig.exe
-    out =
-`# RandomX (CPU) — Veil XMRig build
-
-# Download (Veil build):
-# ${DATA.links.ohceeXmrigRelease}
-
-${xmrigBin} -a rx/veil -o ${hostPort} -u ${user} -p ${passMode}`;
+    const hostPort = stripStratumScheme(stratum);
+    const pass = (pool.id === "fastpool") ? "x" : passMode;
+    out = `${xmrigBin} -a rx/veil -o ${hostPort} -u ${user} -p ${pass}`;
   }
   else if (algo === "sha256dv") {
-    // cpuminer-opt-veil canonical
-    out =
-`# SHA256dv (CPU) — cpuminer-opt-veil
-# Source/build: ${DATA.links.cpuminerShaRepo}
-
-${cpuminerBin} -a sha256dv -o ${stratum} -u ${user} -p ${passMode}${threads ? " -t " + threads : ""}`;
+    out = `${cpuminerBin} -a sha256dv -o ${stratum} -u ${user} -p ${passMode}${threads ? " -t " + threads : ""}`;
   }
   else if (algo === "progpow") {
-    // Can't enforce a single binary name, but we can still keep it copy/paste shaped.
-    out =
-`# ProgPoW (GPU) — template
-# Different GPU miners use different flags for ProgPoW/Veil. Keep the same -o/-u/-p values.
-
-<your_gpu_miner_binary> <algo flags> -o ${stratum} -u ${user} -p ${passMode}`;
+    if (ppMiner === "wildrig") {
+      out = `${wildrigBin} --algo progpow --url ${stratum} --user ${user} --pass ${passMode}`;
+    } else {
+      out = `${trexBin} -a progpow -o ${stratum} -u ${user} -p ${passMode}`;
+    }
   }
   else {
     out = `Unsupported algo: ${algo}`;
@@ -185,11 +411,12 @@ ${cpuminerBin} -a sha256dv -o ${stratum} -u ${user} -p ${passMode}${threads ? " 
   $("poolUrl").href = pool.url;
   $("poolUrl").textContent = pool.url;
   $("poolNote").textContent = pool.note;
-  $("modeHint").textContent = pool.algos[algo]?.modeHint || "";
-  $("presetStratum").textContent = preset ? preset : "(no preset—use pool’s stratum/ports)";
 
-  // Show RX downloads box only for RandomX
-  $("rxBox").style.display = (algo === "randomx") ? "block" : "none";
+  $("endpointUsed").textContent = stratum || "(none)";
+  $("modeHint").textContent = modeHint;
+
+  // Hint text
+  $("addrHint").textContent = walletRaw ? "✓ address set" : "Paste your Veil address so the command is ready to mine.";
 }
 
 async function copyCmd(){
@@ -197,27 +424,220 @@ async function copyCmd(){
   catch { alert("Copy failed. Select and copy manually."); }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  $("veilMiningPage").href = DATA.links.veilMiningPage;
-  $("fastpoolRX").href = DATA.links.fastpoolRX;
+function buildInstructionsFor(item){
+  if (item.algo === "randomx") {
+    return {
+      tabs: [
+        { id:"mac", label:"macOS", text:
+`# XMRig-VEIL (macOS)
+brew install cmake pkg-config openssl@3 hwloc
+git clone ${DATA.links.xmrigVeilRepo}
+cd xmrig-veil
+mkdir -p build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . -j
 
-  $("ohceeRelease").href = DATA.links.ohceeXmrigRelease;
-  $("ohceeLatest").href = DATA.links.ohceeXmrigLatest;
-  $("ohceeRepo").href = DATA.links.ohceeXmrigRepo;
-  $("solfly").href = DATA.links.solflyXmrigReleases;
-  $("cpuminerRepo").href = DATA.links.cpuminerShaRepo;
+# Run with command builder line.`},
+        { id:"linux", label:"Linux", text:
+`# XMRig-VEIL (Linux)
+sudo apt update
+sudo apt install -y git build-essential cmake pkg-config libssl-dev libhwloc-dev
+git clone ${DATA.links.xmrigVeilRepo}
+cd xmrig-veil
+mkdir -p build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . -j
+
+# Run with command builder line.`},
+        { id:"win", label:"Windows", text:
+`# XMRig-VEIL (Windows)
+# Windows build still has issues; use artifacts or build yourself.
+Repo: ${DATA.links.xmrigVeilRepo}`}
+      ]
+    };
+  }
+
+  if (item.algo === "sha256dv") {
+    return {
+      tabs: [
+        { id:"linux", label:"Linux", text:
+`# cpuminer-opt-veil (Linux)
+sudo apt update
+sudo apt install -y git build-essential automake autoconf libtool pkg-config libcurl4-openssl-dev
+git clone ${DATA.links.cpuminerRepo}
+cd cpuminer-opt-veil
+./build.sh
+
+# Run with command builder line.`},
+        { id:"mac", label:"macOS", text:
+`# cpuminer-opt-veil (macOS)
+brew install automake autoconf libtool pkg-config curl openssl@3
+git clone ${DATA.links.cpuminerRepo}
+cd cpuminer-opt-veil
+./build.sh
+
+# Run with command builder line.`},
+        { id:"win", label:"Windows", text:
+`# cpuminer-opt-veil (Windows)
+# Use MSYS2 (UCRT64) or follow repo notes:
+${DATA.links.cpuminerRepo}`}
+      ]
+    };
+  }
+
+  if (item.algo === "progpow") {
+    return {
+      tabs: [
+        { id:"win", label:"Windows", text:
+`# ProgPoW GPU miners (Windows)
+T-Rex:   ${DATA.links.trexReleases}
+WildRig: ${DATA.links.wildrigReleases}
+
+# Download + extract, then use the command builder line.`},
+        { id:"linux", label:"Linux", text:
+`# ProgPoW GPU miners (Linux)
+T-Rex:   ${DATA.links.trexReleases}
+WildRig: ${DATA.links.wildrigReleases}
+
+# Download + extract, chmod +x miner binary, then use the command builder line.`}
+      ]
+    };
+  }
+
+  if (item.algo === "proxy") {
+    return {
+      tabs: [
+        { id:"linux", label:"Linux", text:
+`# veil-node-stratum-proxy (Linux)
+sudo apt update
+sudo apt install -y git python3 python3-venv
+git clone ${DATA.links.proxyRepo}
+cd veil-node-stratum-proxy
+python3 -m venv .venv
+source .venv/bin/activate
+
+# follow repo instructions:
+${DATA.links.proxyRepo}`},
+        { id:"mac", label:"macOS", text:
+`# veil-node-stratum-proxy (macOS)
+brew install python@3
+git clone ${DATA.links.proxyRepo}
+cd veil-node-stratum-proxy
+python3 -m venv .venv
+source .venv/bin/activate
+
+# follow repo instructions:
+${DATA.links.proxyRepo}`}
+      ]
+    };
+  }
+
+  return { tabs: [{ id:"info", label:"Info", text:"No build notes yet." }] };
+}
+
+function renderSoftware(){
+  const box = $("softwareList");
+  box.innerHTML = "";
+
+  for (let i=0;i<DATA.software.length;i++){
+    const s = DATA.software[i];
+    const el = document.createElement("div");
+    el.className = "swItem";
+
+    const tagClass =
+      s.status.startsWith("Works") ? "good" :
+      (s.status === "Optional" ? "warn" : "");
+
+    const inst = buildInstructionsFor(s);
+    const tabIdBase = `sw${i}`;
+
+    const tabsHtml = inst.tabs.map((t, idx) => {
+      const active = idx === 0 ? "active" : "";
+      return `<button class="tabBtn ${active}" data-tab="${tabIdBase}_${t.id}" type="button">${escapeHtml(t.label)}</button>`;
+    }).join("");
+
+    const bodiesHtml = inst.tabs.map((t, idx) => {
+      const display = idx === 0 ? "block" : "none";
+      return `
+        <div class="tabPanel" id="${tabIdBase}_${t.id}" style="display:${display}">
+          <pre>${escapeHtml(t.text)}</pre>
+        </div>
+      `;
+    }).join("");
+
+    el.innerHTML = `
+      <div class="swTop">
+        <div>
+          <div class="swName">${escapeHtml(s.name)} <span class="swTag ${tagClass}">${escapeHtml(s.status)}</span></div>
+          <div class="swMeta">Algo: <code>${escapeHtml(s.algo)}</code> • OS: ${escapeHtml(s.os)}</div>
+        </div>
+        <div class="swLinks">
+          <a href="${s.primary.url}" target="_blank" rel="noopener">${escapeHtml(s.primary.label)}</a>
+          <a href="${s.repo.url}" target="_blank" rel="noopener">${escapeHtml(s.repo.label)}</a>
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:8px; font-size:12px; line-height:1.5">${escapeHtml(s.note)}</div>
+
+      <div class="buildBox">
+        <div class="buildTabs">${tabsHtml}</div>
+        <div class="buildBody">${bodiesHtml}</div>
+      </div>
+    `;
+
+    box.appendChild(el);
+
+    const tabButtons = el.querySelectorAll(".tabBtn");
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-tab");
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        el.querySelectorAll(".tabPanel").forEach(p => p.style.display = "none");
+        const panel = el.querySelector("#" + CSS.escape(target));
+        if (panel) panel.style.display = "block";
+      });
+    });
+  }
+}
+
+function setDefaultPoolForAlgo(algo){
+  // RandomX defaults to FastPool. Others default to yadaminers.
+  $("pool").value = (algo === "randomx") ? "0" : "1";
+  updateAlgoOptions();
+  $("algo").value = algo;
+  buildCmd();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  $("fastpoolRX").href = DATA.links.fastpoolRX;
   $("yada").href = DATA.links.yadaPool;
+  $("veilMiningPage").href = DATA.links.veilMiningPage;
+  $("diff").href = DATA.links.difficulty;
 
   fillPoolOptions();
   updateAlgoOptions();
 
-  ["pool","algo","wallet","worker","mode","threads","stratum","os"].forEach(id=>{
+  // Defaults
+  $("mode").value = "x";
+  $("os").value = "unix";
+  $("ppMiner").value = "trex";
+  $("fpPort").value = "0";
+  $("fpUserFmt").value = "wallet_worker";
+
+  renderSoftware();
+
+  ["pool","algo","wallet","worker","mode","threads","os","ppMiner","stratumOverride","fpPort","fpUserFmt","fpPaymentId","fpDiff"].forEach(id=>{
     $(id).addEventListener("input", buildCmd);
     $(id).addEventListener("change", () => {
       if (id === "pool") updateAlgoOptions();
-      else buildCmd();
+      buildCmd();
     });
   });
+
+  $("algo").addEventListener("change", () => setDefaultPoolForAlgo($("algo").value));
+
+  buildCmd();
 });
 </script>
 </head>
@@ -227,22 +647,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
 <header>
   <h1>Veil Mining Hub</h1>
-  <p class="sub">
-    A community hub to make Veil mining easy.<br>
-    Mining Pools:
-    <a id="veilMiningPage" target="_blank" rel="noopener">Veil mining page</a> •
-    <a id="fastpoolRX" target="_blank" rel="noopener">FastPool RandomX</a> •
-    <a id="yada" target="_blank" rel="noopener">Yada Pool</a>
-  </p>
-    <h1>• <a href="./difficulty.html">Mining difficulty charts</a></h2>
+  <p class="sub">Copy/paste mining commands + verified miner software list.</p>
+
+  <div class="topLinks">
+    <span class="pill"><span class="dot"></span><a id="fastpoolRX" target="_blank" rel="noopener">FastPool</a><small>randomX</small></span>
+    <span class="pill"><span class="dot"></span><a id="yada" target="_blank" rel="noopener">yadaminers.pl</a><small>multi-algo</small></span>
+    <span class="pill"><span class="dot"></span><a id="diff">Difficulty charts</a><small>info</small></span>
+    <span class="pill"><span class="dot"></span><a id="veilMiningPage" target="_blank" rel="noopener">Veil mining page</a><small>official</small></span>
+  </div>
 </header>
 
 <div class="grid">
 
   <div class="card">
     <div class="row">
-      <span class="badge good">Pool Directory + Command Builder</span>
-      <span class="muted">Pick a pool + algo, choose OS, then copy/paste.</span>
+      <span class="badge good">Command Builder</span>
+      <span class="muted">Pick algo + OS, paste address, then copy.</span>
     </div>
 
     <label>Pool</label>
@@ -251,29 +671,71 @@ window.addEventListener("DOMContentLoaded", () => {
     <label>Algorithm</label>
     <select id="algo"></select>
 
+    <div id="ppMinerRow" style="display:none">
+      <label>ProgPoW miner</label>
+      <select id="ppMiner">
+        <option value="trex">T-Rex</option>
+        <option value="wildrig">WildRig</option>
+      </select>
+      <div class="muted" style="margin-top:6px;font-size:12px">
+        Both are supported — this just changes the generated command.
+      </div>
+    </div>
+
     <label>Operating system</label>
     <select id="os">
-      <option value="unix">Linux / macOS (./xmrig)</option>
-      <option value="win">Windows (xmrig.exe)</option>
+      <option value="unix">Linux / macOS</option>
+      <option value="win">Windows</option>
     </select>
 
     <label>Wallet address (payout)</label>
-    <input id="wallet" placeholder="YOUR_VEIL_ADDRESS" />
+    <input id="wallet" placeholder="Paste your Veil address here" />
+    <div class="muted" id="addrHint" style="margin-top:6px;font-size:12px"></div>
 
     <label>Worker name (optional)</label>
-    <input id="worker" placeholder="rig1 (wallet.rig1)" />
+    <input id="worker" placeholder="rig1 (wallet@rig1 for FastPool, wallet.rig1 for others)" />
+
+    <div id="fpUserBox" style="display:none">
+      <label>FastPool username format</label>
+      <select id="fpUserFmt">
+        <option value="wallet">wallet_address</option>
+        <option value="wallet_worker">wallet_address@worker_name (recommended)</option>
+        <option value="solo_wallet">solo:wallet_address (SOLO)</option>
+        <option value="wallet_diff_worker">wallet_address.diff@worker_name (difficulty locking)</option>
+        <option value="wallet_pid">wallet_address.paymentID</option>
+        <option value="wallet_pid_worker">wallet_address+paymentID@worker_name</option>
+      </select>
+
+      <label>Payment ID (optional)</label>
+      <input id="fpPaymentId" placeholder="Only used if you select a Payment ID format" />
+
+      <label>Difficulty lock (optional)</label>
+      <input id="fpDiff" placeholder="Example: 25000 (only used if you select difficulty locking)" />
+    </div>
 
     <label>Mode / password</label>
     <select id="mode">
-      <option value="x">PROP / pool mode (password: x)</option>
+      <option value="x">Pool mode (password: x)</option>
       <option value="solo">SOLO mode (password: solo)</option>
     </select>
 
-    <label>Threads (optional; SHA256dv/cpuminer)</label>
-    <input id="threads" placeholder="Leave blank for auto (e.g., 4)" />
+    <div id="threadsRow" style="display:none">
+      <label>Threads (optional; SHA256dv/cpuminer)</label>
+      <input id="threads" placeholder="Leave blank for auto (e.g., 4)" />
+    </div>
 
-    <label>Stratum endpoint (optional override)</label>
-    <input id="stratum" placeholder="Paste endpoint here (e.g., fastpool.xyz:PORT or stratum+tcp://host:port)" />
+    <div id="fastpoolBox" style="display:none">
+      <label>FastPool port</label>
+      <select id="fpPort"></select>
+      <script>
+        // populated on load in DOMContentLoaded? (we do below)
+      </script>
+    </div>
+
+    <div id="overrideRow">
+      <label>Stratum endpoint override (optional)</label>
+      <input id="stratumOverride" placeholder="Optional override (ex: stratum+tcp://host:port)" />
+    </div>
 
     <div class="row">
       <button class="btn btnAccent" onclick="copyCmd()">Copy command</button>
@@ -282,8 +744,8 @@ window.addEventListener("DOMContentLoaded", () => {
     <label>Generated command</label>
     <pre id="cmd"></pre>
 
-    <div class="muted" style="margin-top:10px">
-      Note: RandomX here always uses <code>-a rx/veil</code> and starts with <code>./xmrig</code> (Linux/macOS) or <code>xmrig.exe</code> (Windows).
+    <div class="notice">
+      FastPool RX uses ports 10281 / 10282 / 10285(SSL) and password <code>x</code>. The builder fills everything.
     </div>
   </div>
 
@@ -295,51 +757,55 @@ window.addEventListener("DOMContentLoaded", () => {
     </div>
 
     <div class="kv" style="margin-top:12px">
-      <div class="k">Preset stratum (if available)</div>
-      <div class="v"><code id="presetStratum"></code></div>
+      <div class="k">Endpoint used by command</div>
+      <div class="v"><code id="endpointUsed"></code></div>
       <div class="muted" id="modeHint" style="margin-top:6px"></div>
     </div>
 
-    <div id="rxBox" class="kv" style="margin-top:12px; display:none">
-      <div class="k">Veil RandomX miner builds (downloads)</div>
-      <div class="v">
-        <span class="badge good">Recommended</span><br>
-        <a id="ohceeRelease" target="_blank" rel="noopener">Download Veil RandomX binaries (v1.0.2-veil)</a><br>
-        <small class="muted">
-          Source: <a id="ohceeRepo" target="_blank" rel="noopener">ohcee/xmrig</a> •
-          Latest: <a id="ohceeLatest" target="_blank" rel="noopener">releases/latest</a>
-        </small>
-        <hr>
-        <small class="muted">Alternate builds:</small><br>
-        <a id="solfly" target="_blank" rel="noopener">SolFly XMRig fork releases</a>
-      </div>
-    </div>
-
     <div class="kv" style="margin-top:12px">
-      <div class="k">Veil SHA256dv miner</div>
+      <div class="k">Solo option</div>
       <div class="v">
-        <a id="cpuminerRepo" target="_blank" rel="noopener">cpuminer-opt-veil (source + build instructions)</a>
+        <span class="badge warn">Encouraged</span>
+        <div class="muted" style="margin-top:6px;font-size:12px;line-height:1.5">
+          You can also run your own node + stratum proxy (build from source):<br>
+          <a href="https://github.com/ohcee/veil-node-stratum-proxy/tree/Fix-keepalived-error" target="_blank" rel="noopener">veil-node-stratum-proxy</a>
+        </div>
       </div>
-    </div>
-
-    <div class="kv" style="margin-top:12px">
-      <div class="k">Other helpful links</div>
-      <div class="v">
-        <a id="yada" target="_blank" rel="noopener">yadaminers Veil pool pages</a>
-      </div>
-    </div>
-
-    <div class="muted" style="margin-top:12px">
-      Goal: make mining as copy/paste as possible + gather community testing feedback across OSes.
     </div>
   </div>
 
 </div>
 
-<footer>
-  Veil Mining Hub • community-run • keep it simple
-</footer>
+<div class="card" style="margin-top:14px">
+  <div class="row">
+    <span class="badge good">Mining software</span>
+    <span class="muted">Verified miners + quick build/run notes.</span>
+  </div>
+  <div class="softwareGrid" id="softwareList"></div>
+</div>
+
+<footer>Veil Mining Hub • keep it simple</footer>
 
 </div>
+
+<script>
+// Populate FastPool port dropdown after DOM is ready
+(function initFastPoolPorts(){
+  const fpPortSel = document.getElementById("fpPort");
+  if (!fpPortSel) return;
+
+  const fastpool = DATA.pools.find(p => p.id === "fastpool");
+  const ports = fastpool?.algos?.randomx?.ports || [];
+
+  fpPortSel.innerHTML = "";
+  ports.forEach((p, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = p.label;
+    fpPortSel.appendChild(opt);
+  });
+})();
+</script>
+
 </body>
 </html>

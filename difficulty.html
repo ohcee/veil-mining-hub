@@ -17,7 +17,7 @@ body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
   background:var(--bg);
   color:var(--text);
-  overflow-y:scroll;   /* IMPORTANT: prevents scrollbar flicker -> resize loop */
+  overflow-y:scroll;   /* prevents scrollbar flicker -> resize loop */
   overflow-x:hidden;
 }
 .wrap{max-width:1100px;margin:auto;padding:24px}
@@ -45,17 +45,17 @@ h1{margin:0 0 6px;font-size:22px}
   border-radius:16px;
   background:var(--card);
   padding:16px;
-  overflow:hidden; /* prevents any inner content from expanding the page */
+  overflow:hidden;
 }
 .card h3{margin:0 0 10px}
 .small{color:var(--muted);font-size:12px;margin-top:8px}
 .canvasWrap{
   width:100%;
-  height:320px;        /* fixed height, no growth */
+  height:320px;
   background:#020617;
   border:1px solid rgba(255,255,255,.06);
   border-radius:12px;
-  overflow:hidden;     /* critical */
+  overflow:hidden;
 }
 canvas{
   display:block;
@@ -83,7 +83,7 @@ footer{margin-top:16px;text-align:center;color:var(--muted);font-size:12px}
 
 <header>
   <h1>Veil Mining Difficulty</h1>
-  <p class="sub">Loads <code>./data/difficulty.json</code> and plots difficulty history per algo.</p>
+  <!-- <p class="sub">Loads <code>./data/difficulty.json</code> and plots difficulty history per algo.</p> -->
   <div class="row">
     <button class="btn" id="refresh">Refresh</button>
     <a class="btn" href="./index.html">Back</a>
@@ -110,11 +110,11 @@ footer{margin-top:16px;text-align:center;color:var(--muted);font-size:12px}
     <div class="small" id="shaNote"></div>
   </div>
 
-  <div class="card">
-    <h3>Debug</h3>
+  <!-- <div class="card">
+     <h3>Debug</h3> 
     <pre id="debug">Waiting…</pre>
   </div>
-</div>
+</div> -->
 
 <footer>Veil Mining Hub • community-run</footer>
 
@@ -151,118 +151,181 @@ function fitCanvasToCSS(canvas){
   return { w, h, dpr };
 }
 
-function drawLineChart(canvasId, series, title){
+function fmtDate(iso){
+  if (!iso) return "";
+  const dt = new Date(iso);
+  if (Number.isNaN(dt.getTime())) return String(iso);
+  // Example: "12-16 14:23" (UTC)
+  const MM = String(dt.getUTCMonth() + 1).padStart(2, "0");
+  const DD = String(dt.getUTCDate()).padStart(2, "0");
+  const hh = String(dt.getUTCHours()).padStart(2, "0");
+  const mm = String(dt.getUTCMinutes()).padStart(2, "0");
+  return `${MM}-${DD} ${hh}:${mm}`;
+}
+
+// Convert your JSON arrays into [{t,d}, ...], sorted, numeric-only.
+function toPoints(arr){
+  if (!Array.isArray(arr)) return [];
+  const pts = arr
+    .map(p => ({ t: p?.t ?? null, d: Number(p?.d) }))
+    .filter(p => Number.isFinite(p.d));
+  pts.sort((a,b) => String(a.t).localeCompare(String(b.t)));
+  return pts;
+}
+
+function drawLineChart(canvasId, points, title){
   const canvas = document.getElementById(canvasId);
   const { w, h } = fitCanvasToCSS(canvas);
   const ctx = canvas.getContext("2d");
 
-  // Clear
+  // Background ALWAYS
   ctx.clearRect(0,0,w,h);
-
-  // Background
   ctx.fillStyle = "#020617";
   ctx.fillRect(0,0,w,h);
 
-  // If no data, show message
-  if (!series.length) {
+  if (!Array.isArray(points) || points.length === 0) {
     ctx.fillStyle = "#94a3b8";
-    ctx.font = `${Math.max(12, Math.floor(h*0.05))}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
     ctx.fillText("No data points yet.", 16, 32);
     return;
   }
 
+  const ys = points.map(p => Number(p.d)).filter(Number.isFinite);
+  if (!ys.length) {
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("No numeric difficulty values found.", 16, 32);
+    return;
+  }
+
   // Chart padding
-  const padL = 44, padR = 16, padT = 16, padB = 34;
+  const padL = 60, padR = 16, padT = 16, padB = 46;
   const cw = Math.max(10, w - padL - padR);
   const ch = Math.max(10, h - padT - padB);
 
-  // Compute min/max
-  let min = Infinity, max = -Infinity;
-  for (const v of series) { if (v < min) min = v; if (v > max) max = v; }
-  if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    ctx.fillStyle = "#fbbf24";
-    ctx.font = "14px system-ui";
-    ctx.fillText("Data contains non-numeric values.", 16, 32);
-    return;
-  }
-  if (min === max) { min *= 0.9; max *= 1.1; } // avoid flatline divide-by-zero
+  let min = Math.min(...ys);
+  let max = Math.max(...ys);
+  if (min === max) { min *= 0.9; max *= 1.1; }
 
-  // Grid
-  ctx.strokeStyle = "rgba(255,255,255,.06)";
-  ctx.lineWidth = 1;
+  const n = points.length;
+  const xAt = (i) => padL + cw * (n === 1 ? 0 : i / (n - 1));
+  const yAt = (v) => {
+    const t = (v - min) / (max - min);
+    return padT + ch * (1 - t);
+  };
 
+  // Font (needed for measureText)
+  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+
+  // Horizontal reference lines + Y labels
   const gridY = 4;
+  ctx.strokeStyle = "rgba(255,255,255,.07)";
+  ctx.lineWidth = 1;
+  ctx.fillStyle = "#94a3b8";
+
   for (let i=0;i<=gridY;i++){
     const y = padT + (ch * i / gridY);
+
     ctx.beginPath();
     ctx.moveTo(padL, y);
     ctx.lineTo(padL + cw, y);
     ctx.stroke();
+
+    const v = max - (max - min) * (i / gridY);
+    ctx.fillText(nice(v), 8, y + 4);
   }
 
-  // Axes labels (simple)
-  ctx.fillStyle = "#94a3b8";
-  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-  ctx.fillText(nice(max), 8, padT + 10);
-  ctx.fillText(nice(min), 8, padT + ch);
+  // Vertical reference lines + X labels (dates)
+  const gridX = 4;
+  for (let i=0;i<=gridX;i++){
+    const idx = Math.round((n - 1) * (i / gridX));
+    const x = xAt(idx);
 
-  // Line
+    // vertical line
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, padT + ch);
+    ctx.stroke();
+
+    // tick
+    ctx.strokeStyle = "rgba(255,255,255,.12)";
+    ctx.beginPath();
+    ctx.moveTo(x, padT + ch);
+    ctx.lineTo(x, padT + ch + 6);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,.07)";
+
+    // label
+    const label = fmtDate(points[idx]?.t);
+    const tw = ctx.measureText(label).width;
+    const lx = Math.min(Math.max(x - tw/2, padL), padL + cw - tw);
+    ctx.fillText(label, lx, padT + ch + 22);
+  }
+
+  // Line (robust start)
   ctx.strokeStyle = "#38bdf8";
   ctx.lineWidth = 2;
+  let started = false;
 
-  const n = series.length;
   ctx.beginPath();
   for (let i=0;i<n;i++){
-    const x = padL + (cw * (n === 1 ? 0 : i / (n - 1)));
-    const t = (series[i] - min) / (max - min);
-    const y = padT + (ch * (1 - t));
-    if (i === 0) ctx.moveTo(x, y);
+    const v = Number(points[i]?.d);
+    if (!Number.isFinite(v)) continue;
+    const x = xAt(i);
+    const y = yAt(v);
+    if (!started) { ctx.moveTo(x, y); started = true; }
     else ctx.lineTo(x, y);
   }
-  ctx.stroke();
+  if (started) ctx.stroke();
 
   // Title / last value
+  const last = ys[ys.length - 1];
   ctx.fillStyle = "#e2e8f0";
   ctx.font = "13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-  const last = series[series.length - 1];
-  ctx.fillText(`${title} • last: ${nice(last)} • points: ${series.length}`, padL, h - 12);
+  // ctx.fillText(`${title} • last: ${nice(last)} • points: ${ys.length}`, padL, h - 10);
 }
 
 async function load(){
-  dbg(`Loading ${DATA_URL} …`);
+  //dbg(`Loading ${DATA_URL} …`);
 
   let data;
   try {
     const res = await fetch(DATA_URL, { cache: "no-store" });
     if (!res.ok) throw new Error(`fetch failed: ${res.status} ${res.statusText}`);
-    data = await res.json();
+
+    // Safer: detect accidental HTML / 404
+    const text = await res.text();
+    try { data = JSON.parse(text); }
+    catch { throw new Error(`Not valid JSON. First 120 chars:\n${text.slice(0,120)}`); }
   } catch (e) {
     dbg(`ERROR loading JSON:\n${e && e.stack ? e.stack : e}`);
     return;
   }
 
-  // Expected keys: randomx, progpow, sha256d
-  const rx  = Array.isArray(data.randomx) ? data.randomx.map(Number).filter(Number.isFinite) : [];
-  const pp  = Array.isArray(data.progpow) ? data.progpow.map(Number).filter(Number.isFinite) : [];
-  const sha = Array.isArray(data.sha256d) ? data.sha256d.map(Number).filter(Number.isFinite) : [];
+  const rxPts  = toPoints(data.randomx);
+  const ppPts  = toPoints(data.progpow);
+  const shaPts = toPoints(data.sha256d);
 
-  drawLineChart("rx",  rx,  "RandomX");
-  drawLineChart("pp",  pp,  "ProgPoW");
-  drawLineChart("sha", sha, "SHA256d");
+  drawLineChart("rx",  rxPts,  "RandomX");
+  drawLineChart("pp",  ppPts,  "ProgPoW");
+  drawLineChart("sha", shaPts, "SHA256d");
 
-  document.getElementById("rxNote").textContent  = `points: ${rx.length}${rx.length ? " • last: " + nice(rx[rx.length-1]) : ""}`;
-  document.getElementById("ppNote").textContent  = `points: ${pp.length}${pp.length ? " • last: " + nice(pp[pp.length-1]) : ""}`;
-  document.getElementById("shaNote").textContent = `points: ${sha.length}${sha.length ? " • last: " + nice(sha[sha.length-1]) : ""}`;
+  /* document.getElementById("rxNote").textContent  =
+    `points: ${rxPts.length}${rxPts.length ? " • last: " + nice(rxPts[rxPts.length-1].d) : ""}`;
+  document.getElementById("ppNote").textContent  =
+    `points: ${ppPts.length}${ppPts.length ? " • last: " + nice(ppPts[ppPts.length-1].d) : ""}`;
+  document.getElementById("shaNote").textContent =
+    `points: ${shaPts.length}${shaPts.length ? " • last: " + nice(shaPts[shaPts.length-1].d) : ""}`;
 
   dbg(
     `OK\n` +
     `updated: ${data.updated ?? "(none)"}\n` +
     `source:  ${data.source ?? "(none)"}\n` +
     `keys:    ${Object.keys(data).join(", ")}\n\n` +
-    `randomx:  ${rx.length} points\n` +
-    `progpow:  ${pp.length} points\n` +
-    `sha256d:  ${sha.length} points\n`
-  );
+    `randomx:  ${rxPts.length} points\n` +
+    `progpow:  ${ppPts.length} points\n` +
+    `sha256d:  ${shaPts.length} points\n`
+  );*/
 }
 
 document.getElementById("refresh").addEventListener("click", load);
