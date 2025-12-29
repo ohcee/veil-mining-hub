@@ -1,6 +1,6 @@
 # Veil Mining Hub
 
-A simple, community-run web hub to make Veil mining as **copy/paste** as possible.
+A simple web hub to make Veil mining as **copy/paste** as possible.
 
 Use it here (no install needed):
 https://ohcee.github.io/veil-mining-hub/
