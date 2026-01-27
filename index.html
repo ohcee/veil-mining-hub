@@ -3,54 +3,73 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>VEIL // ELITE MINING COMMAND</title>
+<title>VEIL // ELITE COMMAND</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: #020408; --panel: rgba(10, 15, 25, 0.9); --border: rgba(0, 242, 255, 0.3);
-    --accent: #00f2ff; --neon-green: #39ff14; --neon-red: #ff0055;
+    --bg: #010307; --panel: rgba(10, 15, 25, 0.95); --border: rgba(0, 242, 255, 0.4);
+    --accent: #00f2ff; --neon-green: #39ff14; --neon-purple: #bc13fe; --neon-red: #ff0055;
     --text: #c3cedb; --white: #ffffff;
 }
 body { 
     margin: 0; background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace;
-    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    overflow-x: hidden;
 }
 
-.container { max-width: 1550px; margin: auto; padding: 30px; }
+.container { max-width: 1600px; margin: auto; padding: 30px; }
 
-/* CYBERPUNK CLOCK */
+/* VFD NEON CLOCK */
 .clock-vfd {
-    font-family: 'Orbitron', sans-serif; font-size: 32px; color: var(--accent);
-    text-shadow: 0 0 15px var(--accent); letter-spacing: 4px; border: 1px solid var(--border);
-    padding: 10px 25px; background: rgba(0, 242, 255, 0.05); display: inline-block;
+    font-family: 'Orbitron', sans-serif; font-size: 38px; color: var(--accent);
+    text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0, 242, 255, 0.2);
+    letter-spacing: 6px; padding: 15px 30px; background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--border); box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.1);
 }
 
-/* HEADER SECTION */
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-.brand h1 { font-family: 'Orbitron'; font-weight: 800; color: var(--white); margin: 0; letter-spacing: 5px; }
-.brand span { color: var(--accent); font-size: 10px; letter-spacing: 3px; }
+/* HEADER */
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.brand h1 { font-family: 'Orbitron'; font-weight: 900; color: var(--white); margin: 0; letter-spacing: 8px; font-size: 2.5rem; }
+.brand span { color: var(--accent); font-size: 11px; letter-spacing: 4px; opacity: 0.8; }
 
-/* STAT CARDS */
-.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px; }
-.card { background: var(--panel); border: 1px solid var(--border); padding: 25px; position: relative; overflow: hidden; }
-.card::before { content: ""; position: absolute; top:0; left:0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-.val { font-size: 32px; color: var(--white); font-weight: 800; font-family: 'Orbitron'; margin: 10px 0; }
-.label { font-size: 10px; text-transform: uppercase; color: var(--accent); letter-spacing: 2px; }
+/* ALGO TOGGLE SELECTOR */
+.algo-selector { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
+.algo-pill { 
+    padding: 12px 25px; border: 1px solid var(--border); cursor: pointer; font-family: 'Orbitron'; 
+    font-size: 12px; transition: 0.3s; background: rgba(0,0,0,0.5); color: var(--muted);
+}
+.algo-pill:hover { border-color: var(--accent); color: var(--white); }
+.algo-pill.active { background: var(--accent); color: #000; font-weight: 800; box-shadow: 0 0 20px var(--accent); }
 
-/* BUILDER & TOOLS */
-.main-grid { display: grid; grid-template-columns: 450px 1fr; gap: 30px; }
-.tool-panel { background: var(--panel); border: 1px solid var(--border); padding: 25px; }
-select, input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; margin: 10px 0 20px 0; }
-.terminal { background: #000; padding: 20px; border: 1px solid #1a2233; color: var(--neon-green); font-size: 13px; min-height: 80px; position: relative; }
-.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-size: 10px; font-weight: bold; }
+/* MAIN LAYOUT */
+.main-grid { display: grid; grid-template-columns: 480px 1fr; gap: 30px; }
+@media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
 
-/* TAB STYLING */
-.tabs { display: flex; gap: 2px; }
-.tab-btn { padding: 12px 20px; background: #0a0f19; border: 1px solid var(--border); color: var(--text); cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
-.tab-btn.active { background: var(--accent); color: #000; }
-.tab-content { background: var(--panel); border: 1px solid var(--border); padding: 30px; display: none; }
+.panel { background: var(--panel); border: 1px solid var(--border); padding: 30px; position: relative; backdrop-filter: blur(10px); }
+.panel::after { content: ""; position: absolute; bottom: 0; right: 0; border-style: solid; border-width: 0 0 20px 20px; border-color: transparent transparent var(--border) transparent; }
+
+/* STATS */
+.stat-box { display: none; }
+.stat-box.active { display: block; animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.val-display { font-size: 48px; font-family: 'Orbitron'; font-weight: 900; color: var(--white); margin: 10px 0; }
+
+/* TERMINAL */
+.terminal { background: #000; border: 1px solid #1a2233; padding: 25px; position: relative; margin-top: 20px; }
+.terminal pre { margin: 0; color: var(--neon-green); font-size: 14px; white-space: pre-wrap; word-break: break-all; font-weight: 500; }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); border: none; padding: 5px 12px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; font-weight: 900; }
+
+/* TAB SYSTEM */
+.tab-nav { display: flex; gap: 5px; margin-top: 20px; }
+.tab-btn { padding: 10px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: var(--accent); cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
+.tab-btn.active { background: var(--panel); border-bottom-color: transparent; border-top: 2px solid var(--accent); color: #fff; }
+.tab-content { border: 1px solid var(--border); padding: 25px; display: none; background: rgba(0,0,0,0.3); }
 .tab-content.active { display: block; }
+
+input { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; color: #fff; margin-bottom: 20px; outline: none; }
+input:focus { border-color: var(--neon-green); }
 </style>
 </head>
 <body>
@@ -58,120 +77,125 @@ select, input { width: 100%; background: #000; border: 1px solid var(--border); 
 <div class="container">
     <header>
         <div class="brand">
-            <h1>VEIL // PROTOCOL</h1>
-            <span>CORE STATUS: ONLINE // DATA POLLING: ACTIVE</span>
+            <h1>VEIL // CORE</h1>
+            <span>DATA VERSION 2026.04 // MULTI-ALGO SYNC</span>
         </div>
         <div id="clock" class="clock-vfd">00:00:00</div>
     </header>
 
-    <div class="stat-row">
-        <div class="card">
-            <div class="label">RandomX (CPU) Diff</div>
-            <div id="rx-val" class="val">---</div>
-            <div style="color: var(--neon-green); font-size: 11px;">OPTIMIZED FOR XMRIG-VEIL</div>
-        </div>
-        <div class="card">
-            <div class="label">ProgPoW (GPU) Diff</div>
-            <div id="pp-val" class="val">---</div>
-            <div style="color: var(--accent); font-size: 11px;">T-REX (NVIDIA) | WILDRIG (AMD)</div>
-        </div>
-        <div class="card">
-            <div class="label">SHA256d (ASIC/CPU)</div>
-            <div id="sha-val" class="val">---</div>
-            <div style="color: var(--neon-red); font-size: 11px;">MINER: CPUMINER-OPT-VEIL</div>
-        </div>
+    <div class="algo-selector">
+        <div class="algo-pill active" onclick="setAlgo('rx')">RANDOMX (CPU)</div>
+        <div class="algo-pill" onclick="setAlgo('pp')">PROGPOW (GPU)</div>
+        <div class="algo-pill" onclick="setAlgo('sha')">SHA256D (HYBRID)</div>
     </div>
 
     <div class="main-grid">
         <aside>
-            <div class="tool-panel">
-                <div class="label" style="margin-bottom: 20px;">Mining Command Generator</div>
-                
-                <label>Hardware Target</label>
-                <select id="gpu-type" onchange="gen()">
-                    <option value="cpu">CPU (XMRig-Veil)</option>
-                    <option value="nvidia">Nvidia GPU (T-Rex)</option>
-                    <option value="amd">AMD GPU (WildRig)</option>
-                    <option value="sha">SHA256d (CPU-Opt-Veil)</option>
-                </select>
+            <div class="panel">
+                <div id="rx-stat" class="stat-box active">
+                    <div class="label" style="color:var(--accent)">RANDOMX DIFFICULTY</div>
+                    <div id="rx-val" class="val-display">0.00</div>
+                    <div style="font-size:11px; color:var(--neon-green)">NETWORK: XMRig-Veil Optimized</div>
+                </div>
+                <div id="pp-stat" class="stat-box">
+                    <div class="label" style="color:var(--neon-green)">PROGPOW DIFFICULTY</div>
+                    <div id="pp-val" class="val-display">0.00</div>
+                    <div style="font-size:11px; color:var(--accent)">MINERS: T-Rex (Nvidia) / WildRig (AMD)</div>
+                </div>
+                <div id="sha-stat" class="stat-box">
+                    <div class="label" style="color:var(--neon-red)">SHA256D DIFFICULTY</div>
+                    <div id="sha-val" class="val-display">0.00</div>
+                    <div style="font-size:11px; color:var(--neon-purple)">SOURCE: cpuminer-opt-veil</div>
+                </div>
 
-                <label>Wallet Address</label>
-                <input id="addr" placeholder="PASTE_VEIL_ADDRESS" oninput="gen()">
+                <hr style="border:0; border-top:1px solid var(--border); margin: 30px 0;">
 
+                <div class="label" style="margin-bottom:10px;">RECEIVING ADDRESS</div>
+                <input id="addr" placeholder="PASTE ADDRESS..." oninput="updateCmd()">
+
+                <div class="label" style="margin-bottom:10px;">EXECUTION STRING</div>
                 <div class="terminal">
                     <button class="copy-btn" onclick="copy()">COPY</button>
                     <pre id="out">./xmrig -a rx/veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ADDRESS -p x</pre>
                 </div>
 
-                <div class="label" style="margin: 30px 0 15px 0;">Official Repos</div>
-                <div style="display: grid; gap: 10px;">
-                    <a href="https://github.com/ohcee/xmrig-veil" style="color: var(--accent); font-size: 12px;">> ohcee/xmrig-veil (CPU)</a>
-                    <a href="https://github.com/Rakni1988/cpuminer-opt-veil" style="color: var(--accent); font-size: 12px;">> Rakni1988/cpuminer-opt (SHA)</a>
-                    <a href="https://github.com/ohcee/veil-node-stratum-proxy" style="color: var(--accent); font-size: 12px;">> ohcee/stratum-proxy (Solo)</a>
+                <div style="margin-top:40px;">
+                    <div class="label" style="margin-bottom:15px;">DEVELOPER SOURCES</div>
+                    <a href="https://github.com/ohcee/xmrig-veil" style="display:block; color:var(--accent); font-size:12px; margin-bottom:8px; text-decoration:none;">>> xmrig-veil [Official CPU]</a>
+                    <a href="https://github.com/Rakni1988/cpuminer-opt-veil" style="display:block; color:var(--accent); font-size:12px; margin-bottom:8px; text-decoration:none;">>> cpuminer-opt-veil [SHA256d]</a>
+                    <a href="https://github.com/ohcee/veil-node-stratum-proxy" style="display:block; color:var(--accent); font-size:12px; text-decoration:none;">>> veil-stratum-proxy [Solo]</a>
                 </div>
             </div>
         </aside>
 
         <main>
-            <div class="tool-panel" style="margin-bottom: 30px;">
-                <div class="label">Network Difficulty Propagation</div>
-                <div style="height: 300px;"><canvas id="mainChart"></canvas></div>
+            <div class="panel" style="margin-bottom:30px;">
+                <div class="label" style="margin-bottom:20px;">DIFFICULTY PROPAGATION MATRIX</div>
+                <div style="height: 350px;"><canvas id="mainChart"></canvas></div>
             </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" onclick="tab(event, 't-xmrig')">Build XMRig (CPU)</button>
-                <button class="tab-btn" onclick="tab(event, 't-sha')">Build SHA-Miner (CPU)</button>
-                <button class="tab-btn" onclick="tab(event, 't-gpu')">GPU Setup</button>
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="tab(event, 'b-xmrig')">BUILD XMRIG (CPU)</button>
+                <button class="tab-btn" onclick="tab(event, 'b-sha')">BUILD SHA-OP (CPU)</button>
+                <button class="tab-btn" onclick="tab(event, 'b-gpu')">GPU SETUP (NVIDIA/AMD)</button>
             </div>
 
-            <div id="t-xmrig" class="tab-content active">
-                <pre style="color: var(--white)"># CLONE & BUILD XMRIG-VEIL (Linux/Ubuntu)
-sudo apt install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
+            <div id="b-xmrig" class="tab-content active">
+                <pre style="color:var(--white)"># Build instructions for XMRig-Veil
 git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake ..
 make -j$(nproc)</pre>
             </div>
-
-            <div id="t-sha" class="tab-content">
-                <pre style="color: var(--white)"># CLONE & BUILD CPUMINER-OPT-VEIL
-sudo apt-get install build-essential libssl-dev libcurl4-openssl-dev libjansson-dev libgmp-dev automake
+            <div id="b-sha" class="tab-content">
+                <pre style="color:var(--white)"># Build instructions for cpuminer-opt-veil
 git clone https://github.com/Rakni1988/cpuminer-opt-veil.git
 cd cpuminer-opt-veil
 ./autogen.sh
 ./configure CFLAGS="-O3 -march=native" --with-curl --with-crypto
 make -j$(nproc)</pre>
             </div>
-
-            <div id="t-gpu" class="tab-content">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <div class="label" style="color: var(--white);">Nvidia (T-Rex)</div>
-                        <p style="font-size: 11px;">Download T-Rex v0.26.6+ and use algo: <b>progpow-veil</b></p>
-                    </div>
-                    <div>
-                        <div class="label" style="color: var(--white);">AMD (WildRig)</div>
-                        <p style="font-size: 11px;">Use WildRig Multi v0.32.1+ and use algo: <b>progpow-veil</b></p>
-                    </div>
-                </div>
+            <div id="b-gpu" class="tab-content">
+                <p style="color:var(--accent); font-weight:800;">NVIDIA (T-REX):</p>
+                <pre style="color:#fff">t-rex -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ADDR -p x</pre>
+                <p style="color:var(--neon-green); font-weight:800; margin-top:20px;">AMD (WILDRIG):</p>
+                <pre style="color:#fff">wildrig -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ADDR -p x</pre>
             </div>
         </main>
     </div>
 </div>
 
 <script>
+let currentAlgo = 'rx';
 let chart;
-function gen() {
-    const target = document.getElementById('gpu-type').value;
-    const addr = document.getElementById('addr').value || "VEIL_ADDRESS";
-    let cmd = "";
+
+function setAlgo(algo) {
+    currentAlgo = algo;
+    // Update Toggle Pills
+    document.querySelectorAll('.algo-pill').forEach(p => p.classList.remove('active'));
+    event.currentTarget.classList.add('active');
     
-    if(target === 'cpu') cmd = `./xmrig -a rx/veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
-    if(target === 'nvidia') cmd = `t-rex -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
-    if(target === 'amd') cmd = `wildrig -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
-    if(target === 'sha') cmd = `./cpuminer -a sha256dv -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
+    // Update Stat Boxes
+    document.querySelectorAll('.stat-box').forEach(b => b.classList.remove('active'));
+    document.getElementById(algo + '-stat').classList.add('active');
     
-    document.getElementById('out').innerText = cmd;
+    updateCmd();
+    updateChartHighlight();
+}
+
+function updateCmd() {
+    const addr = document.getElementById('addr').value || "YOUR_ADDRESS";
+    const out = document.getElementById('out');
+    
+    if(currentAlgo === 'rx') {
+        out.innerText = `./xmrig -a rx/veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
+    } else if(currentAlgo === 'pp') {
+        // T-Rex / WildRig typically use port 3336 or 3338 on multi-pools
+        out.innerText = `t-rex -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ${addr} -p x`;
+    } else {
+        // SHA port usually 3334
+        out.innerText = `./cpuminer -a sha256dv -o stratum+tcp://veil.yadaminers.pl:3334 -u ${addr} -p x`;
+    }
 }
 
 function tab(e, id) {
@@ -185,6 +209,7 @@ async function loadData() {
     try {
         const res = await fetch('data/difficulty.json');
         const data = await res.json();
+        
         document.getElementById('rx-val').innerText = data.randomx[data.randomx.length-1].d.toLocaleString();
         document.getElementById('pp-val').innerText = data.progpow[data.progpow.length-1].d.toLocaleString();
         document.getElementById('sha-val').innerText = data.sha256d[data.sha256d.length-1].d.toLocaleString();
@@ -194,21 +219,37 @@ async function loadData() {
         chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.randomx.map((_,i)=>i),
+                labels: data.randomx.map((_, i) => i),
                 datasets: [
-                    { label: 'RandomX', data: data.randomx.map(d=>d.d), borderColor: '#00f2ff', fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)', tension: 0.4 },
-                    { label: 'ProgPoW', data: data.progpow.map(d=>d.d), borderColor: '#39ff14', tension: 0.4 },
-                    { label: 'SHA256d', data: data.sha256d.map(d=>d.d), borderColor: '#ff0055', tension: 0.4 }
+                    { label: 'RandomX', data: data.randomx.map(d=>d.d), borderColor: '#00f2ff', tension: 0.4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)' },
+                    { label: 'ProgPoW', data: data.progpow.map(d=>d.d), borderColor: '#39ff14', tension: 0.4, pointRadius: 0 },
+                    { label: 'SHA256d', data: data.sha256d.map(d=>d.d), borderColor: '#ff0055', tension: 0.4, pointRadius: 0 }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { display: false }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#fff', font: { family: 'Orbitron' } } } },
+                scales: {
+                    x: { display: false },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+                }
+            }
         });
-    } catch(e) { console.error("JSON Data Missing"); }
+    } catch(e) { console.warn("Awaiting data/difficulty.json feed..."); }
 }
 
-function copy() { navigator.clipboard.writeText(document.getElementById('out').innerText); alert("BUFFER COPIED"); }
-setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
-window.onload = () => { loadData(); gen(); };
+function copy() {
+    navigator.clipboard.writeText(document.getElementById('out').innerText);
+    const b = document.querySelector('.copy-btn');
+    b.innerText = "COPIED!";
+    setTimeout(() => b.innerText = "COPY", 2000);
+}
+
+setInterval(() => {
+    document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
+}, 1000);
+
+window.onload = () => { loadData(); updateCmd(); };
 </script>
 </body>
 </html>
