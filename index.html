@@ -3,135 +3,182 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Veil Mining Hub | Official Build Center</title>
+<title>Veil Mining Hub | Full Stack</title>
 <style>
 :root {
   --bg: #0b1120; --card: #1e293b; --border: #334155;
   --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8;
-  --green: #10b981; --mono: 'JetBrains Mono', monospace;
+  --green: #10b981; --warn: #f59e0b; --mono: 'JetBrains Mono', monospace;
 }
-body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
-.container { max-width: 1200px; margin: auto; padding: 20px; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+.container { max-width: 1400px; margin: auto; padding: 20px; }
 
-/* REPO LINKS */
-.repo-header { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-.repo-link { background: var(--card); border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; text-decoration: none; color: var(--text); font-weight: bold; transition: 0.2s; }
-.repo-link:hover { border-color: var(--accent); background: #0f172a; }
+/* LAYOUT GRID */
+.layout { display: grid; grid-template-columns: 450px 1fr; gap: 20px; }
+@media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+
+/* COMPONENTS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.card-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--accent); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+/* CONFIG BUILDER */
+label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--muted); }
+select, input { width: 100%; padding: 10px; background: #0f172a; border: 1px solid var(--border); color: #fff; border-radius: 6px; margin-bottom: 15px; }
+.cmd-box { background: #000; padding: 15px; border-radius: 6px; border-left: 4px solid var(--green); position: relative; }
+pre { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--green); white-space: pre-wrap; word-break: break-all; }
+.copy-badge { position: absolute; top: 5px; right: 5px; font-size: 9px; background: var(--border); padding: 3px 6px; border-radius: 3px; cursor: pointer; }
+
+/* CHARTS */
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+.chart-box { background: #0f172a; border-radius: 10px; padding: 15px; border: 1px solid var(--border); }
+.canvasWrap { height: 140px; }
+.stat-row { display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; color: var(--muted); }
 
 /* TABS */
-.tabs { display: flex; gap: 5px; margin-bottom: -1px; }
-.tab-btn { padding: 12px 24px; background: #0f172a; border: 1px solid var(--border); color: var(--muted); cursor: pointer; border-radius: 8px 8px 0 0; font-weight: bold; }
-.tab-btn.active { background: var(--card); border-bottom-color: var(--card); color: var(--accent); }
-.tab-content { background: var(--card); border: 1px solid var(--border); border-radius: 0 12px 12px 12px; padding: 25px; display: none; }
+.tabs { display: flex; gap: 2px; margin-top: 20px; }
+.tab-btn { padding: 10px 15px; background: #0f172a; border: 1px solid var(--border); color: var(--muted); cursor: pointer; border-radius: 6px 6px 0 0; font-size: 12px; }
+.tab-btn.active { background: var(--card); border-bottom: 2px solid var(--accent); color: #fff; }
+.tab-content { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 0 0 10px 10px; display: none; }
 .tab-content.active { display: block; }
-
-/* CODE BOXES */
-.cmd-box { background: #000; padding: 18px; border-radius: 8px; border-left: 4px solid var(--green); position: relative; margin: 15px 0; }
-pre { margin: 0; font-family: var(--mono); font-size: 13px; color: #a5f3fc; white-space: pre-wrap; word-break: break-all; }
-.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--border); color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
-.copy-btn:hover { background: var(--accent); color: #000; }
-
-h3 { color: var(--accent); margin-top: 0; }
-.info-tag { font-size: 12px; background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div style="text-align: center; margin-bottom: 40px;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 5px;">VEIL MINING HUB</h1>
-    <p style="color: var(--muted);">Unified Build Guide for XMRig-Veil & Stratum Proxy</p>
-  </div>
+  <div class="layout">
+    
+    <aside>
+      <div class="card">
+        <div class="card-title">Mining Config Generator</div>
+        <label>OS Platform</label>
+        <select id="os" onchange="update()">
+          <option value="win">Windows</option>
+          <option value="lin">Linux</option>
+          <option value="mac">macOS</option>
+          <option value="hive">HiveOS</option>
+        </select>
 
-  <div class="repo-header">
-    <a href="https://github.com/ohcee/xmrig-veil" target="_blank" class="repo-link">📦 XMRig-Veil Source</a>
-    <a href="https://github.com/ohcee/veil-node-stratum-proxy" target="_blank" class="repo-link">🛰️ Veil Stratum Proxy</a>
-    <a href="https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" target="_blank" class="repo-link">⛏️ WildRig (Legacy ProgPoW)</a>
-  </div>
+        <label>Algorithm</label>
+        <select id="algo" onchange="update()">
+          <option value="rx">RandomX (CPU)</option>
+          <option value="pp">ProgPoW (GPU)</option>
+          <option value="sha">SHA256d (ASIC)</option>
+        </select>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="openTab(event, 'mac')">macOS</button>
-    <button class="tab-btn" onclick="openTab(event, 'win')">Windows</button>
-    <button class="tab-btn" onclick="openTab(event, 'linux')">Linux/Ubuntu</button>
-    <button class="tab-btn" onclick="openTab(event, 'proxy')">Solo Proxy</button>
-  </div>
+        <label>Veil Address</label>
+        <input id="address" placeholder="PASTE_ADDRESS" oninput="update()">
 
-  <div id="mac" class="tab-content active">
-    <h3>Apple Silicon & Intel Build</h3>
-    <span class="info-tag">Requires Homebrew</span>
-    <p>1. Install dependencies:</p>
-    <div class="cmd-box">
-      <button class="copy-btn" onclick="copyCode('mac-dep')">Copy</button>
-      <pre id="mac-dep">brew install cmake libuv openssl hwloc</pre>
-    </div>
-    <p>2. Compile XMRig-Veil:</p>
-    <div class="cmd-box">
-      <button class="copy-btn" onclick="copyCode('mac-build')">Copy</button>
-      <pre id="mac-build">git clone https://github.com/ohcee/xmrig-veil.git
+        <div id="out-std">
+          <label>Execution Command</label>
+          <div class="cmd-box"><span class="copy-badge" onclick="copy('cmd-text')">COPY</span><pre id="cmd-text"></pre></div>
+        </div>
+        <div id="out-hive" style="display:none">
+          <label>HiveOS Config</label>
+          <div class="cmd-box" style="border-left-color: var(--warn);"><span class="copy-badge" onclick="copy('hive-json')">COPY</span><pre id="hive-json"></pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Source Repositories</div>
+        <div style="font-size: 13px;">
+          <a href="https://github.com/ohcee/xmrig-veil" target="_blank" style="color:var(--accent); text-decoration:none;">🔗 XMRig-Veil (Official)</a><br><br>
+          <a href="https://github.com/ohcee/veil-node-stratum-proxy" target="_blank" style="color:var(--accent); text-decoration:none;">🔗 Stratum Proxy (Solo)</a><br><br>
+          <a href="https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" target="_blank" style="color:var(--accent); text-decoration:none;">🔗 WildRig v0.40.6 (GPU)</a>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="card">
+        <div class="card-title">Network Analytics</div>
+        <div class="chart-grid">
+          <div class="chart-box">
+            <div class="stat-row"><span>RandomX</span><b id="rx-cur" style="color:var(--accent)">--</b></div>
+            <div class="canvasWrap"><canvas id="rx-chart"></canvas></div>
+          </div>
+          <div class="chart-box">
+            <div class="stat-row"><span>ProgPoW</span><b id="pp-cur" style="color:var(--accent)">--</b></div>
+            <div class="canvasWrap"><canvas id="pp-chart"></canvas></div>
+          </div>
+          <div class="chart-box">
+            <div class="stat-row"><span>SHA256d</span><b id="sha-cur" style="color:var(--accent)">--</b></div>
+            <div class="canvasWrap"><canvas id="sha-chart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 't-mac')">Build macOS</button>
+        <button class="tab-btn" onclick="openTab(event, 't-win')">Build Windows</button>
+        <button class="tab-btn" onclick="openTab(event, 't-lin')">Build Linux</button>
+      </div>
+
+      <div id="t-mac" class="tab-content active">
+        <div class="cmd-box"><span class="copy-badge" onclick="copy('b-mac')">COPY</span><pre id="b-mac">brew install cmake libuv openssl hwloc
+git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake .. -DOPENSSL_ROOT_DIR=$(brew --prefix openssl)
-make -j$(sysctl -n hw.logicalcpu)</pre>
-    </div>
-  </div>
+make -j$(sysctl -n hw.logicalcpu)</pre></div>
+      </div>
 
-  <div id="win" class="tab-content">
-    <h3>MSYS2 Build (Recommended)</h3>
-    <p>1. Install <a href="https://www.msys2.org/" style="color:var(--accent)">MSYS2</a> and extract <a href="https://github.com/xmrig/xmrig-deps/releases" style="color:var(--accent)">Prebuilt Deps</a> to <code>C:\xmrig-deps</code>.</p>
-    <p>2. Open **MSYS2 UCRT64** and run:</p>
-    <div class="cmd-box">
-      <button class="copy-btn" onclick="copyCode('win-build')">Copy</button>
-      <pre id="win-build">pacman -S mingw-w64-ucrt-x86_64-gcc git make
+      <div id="t-win" class="tab-content">
+        <p style="font-size:12px; color:var(--muted)">Use MSYS2 UCRT64. Extact deps to C:\xmrig-deps</p>
+        <div class="cmd-box"><span class="copy-badge" onclick="copy('b-win')">COPY</span><pre id="b-win">pacman -S mingw-w64-ucrt-x86_64-gcc git make
 git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake .. -G "Unix Makefiles" -DXMRIG_DEPS=c:/xmrig-deps/gcc/x64
-make -j$(nproc)</pre>
-    </div>
-  </div>
+make -j$(nproc)</pre></div>
+      </div>
 
-  <div id="linux" class="tab-content">
-    <h3>Ubuntu / Debian / Linux Build</h3>
-    <p>Install dependencies and build from source:</p>
-    <div class="cmd-box">
-      <button class="copy-btn" onclick="copyCode('lin-build')">Copy</button>
-      <pre id="lin-build">sudo apt install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
+      <div id="t-lin" class="tab-content">
+        <div class="cmd-box"><span class="copy-badge" onclick="copy('b-lin')">COPY</span><pre id="b-lin">sudo apt install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
 git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake ..
-make -j$(nproc)</pre>
-    </div>
+make -j$(nproc)</pre></div>
+      </div>
+    </main>
   </div>
-
-  <div id="proxy" class="tab-content">
-    <h3>Veil Stratum Proxy (Solo Mining)</h3>
-    <p>Run this to connect your built XMRig to a local Veil node:</p>
-    <div class="cmd-box">
-      <button class="copy-btn" onclick="copyCode('proxy-run')">Copy</button>
-      <pre id="proxy-run">git clone https://github.com/ohcee/veil-node-stratum-proxy.git
-cd veil-node-stratum-proxy
-# Build/Run proxy (ensure Python 3 is installed)
-python3 veilproxy.py -p 5555 -n http://user:pass@127.0.0.1:8332</pre>
-    </div>
-  </div>
-
 </div>
 
 <script>
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tab-content");
-  for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
-  tablinks = document.getElementsByClassName("tab-btn");
-  for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-  document.getElementById(tabName).style.display = "block";
+function copy(id) {
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  alert("Copied!");
+}
+
+function openTab(evt, name) {
+  var i, tc = document.getElementsByClassName("tab-content"), tb = document.getElementsByClassName("tab-btn");
+  for (i = 0; i < tc.length; i++) tc[i].style.display = "none";
+  for (i = 0; i < tb.length; i++) tb[i].className = tb[i].className.replace(" active", "");
+  document.getElementById(name).style.display = "block";
   evt.currentTarget.className += " active";
 }
 
-function copyCode(id) {
-  const text = document.getElementById(id).innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    alert("Command copied to clipboard!");
-  });
+function update() {
+  const algo = document.getElementById("algo").value, os = document.getElementById("os").value, addr = document.getElementById("address").value || "VEIL_ADDRESS";
+  let miner = (algo === "rx") ? "xmrig" : "wildrig";
+  let aStr = (algo === "rx") ? "rx/veil" : (algo === "pp" ? "progpow-veil" : "sha256dv");
+  let bin = (os === "win") ? miner + ".exe" : "./" + miner;
+  
+  document.getElementById("cmd-text").innerText = `${bin} -a ${aStr} -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
+  document.getElementById("out-hive").style.display = (os === "hive") ? "block" : "none";
+  document.getElementById("out-std").style.display = (os === "hive") ? "none" : "block";
+  document.getElementById("hive-json").innerText = JSON.stringify({ "algo": aStr, "template": "%WAL%" }, null, 2);
 }
+
+// Chart Logic placeholder (Assumes difficulty.json exists in ./data/)
+async function loadCharts() {
+  try {
+    const res = await fetch('./data/difficulty.json');
+    const data = await res.json();
+    // Logic to draw on canvases would go here
+    document.getElementById("rx-cur").innerText = data.randomx[data.randomx.length-1].d;
+  } catch(e) { console.log("Chart data not found"); }
+}
+
+window.onload = () => { update(); loadCharts(); };
 </script>
 </body>
 </html>
