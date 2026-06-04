@@ -1,255 +1,1536 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VEIL // MINING HUB</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-    --bg: #010307; --panel: rgba(10, 15, 25, 0.95); --border: rgba(0, 242, 255, 0.4);
-    --accent: #00f2ff; --neon-green: #39ff14; --neon-purple: #bc13fe; --neon-red: #ff0055;
-    --text: #c3cedb; --white: #ffffff;
-}
-body { 
-    margin: 0; background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace;
-    background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+  :root {
+    --bg:       #0a0c10;
+    --bg2:      #0f1218;
+    --bg3:      #141820;
+    --border:   #1e2530;
+    --border2:  #2a3240;
+    --veil:     #4fc3f7;
+    --veil2:    #0288d1;
+    --rx:       #26c6da;
+    --pp:       #ab47bc;
+    --sha:      #ef5350;
+    --gold:     #ffd54f;
+    --text:     #c8d0dc;
+    --text2:    #7a8898;
+    --text3:    #4a5560;
+    --green:    #66bb6a;
+    --glow:     rgba(79, 195, 247, 0.12);
+    --glow2:    rgba(79, 195, 247, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
     overflow-x: hidden;
-}
+  }
 
-.container { max-width: 1600px; margin: auto; padding: 30px; }
+  /* SCAN LINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-/* VFD NEON CLOCK */
-.clock-vfd {
-    font-family: 'Orbitron', sans-serif; font-size: 38px; color: var(--accent);
-    text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0, 242, 255, 0.2);
-    letter-spacing: 6px; padding: 15px 30px; background: rgba(0, 0, 0, 0.8);
-    border: 2px solid var(--border); box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.1);
-}
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+  }
 
-/* HEADER */
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-.brand h1 { font-family: 'Orbitron'; font-weight: 900; color: var(--white); margin: 0; letter-spacing: 8px; font-size: 2.5rem; }
-.brand span { color: var(--accent); font-size: 11px; letter-spacing: 4px; opacity: 0.8; }
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
 
-/* ALGO TOGGLE SELECTOR */
-.algo-selector { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
-.algo-pill { 
-    padding: 12px 25px; border: 1px solid var(--border); cursor: pointer; font-family: 'Orbitron'; 
-    font-size: 12px; transition: 0.3s; background: rgba(0,0,0,0.5); color: var(--muted);
-}
-.algo-pill:hover { border-color: var(--accent); color: var(--white); }
-.algo-pill.active { background: var(--accent); color: #000; font-weight: 800; box-shadow: 0 0 20px var(--accent); }
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-/* MAIN LAYOUT */
-.main-grid { display: grid; grid-template-columns: 480px 1fr; gap: 30px; }
-@media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
 
-.panel { background: var(--panel); border: 1px solid var(--border); padding: 30px; position: relative; backdrop-filter: blur(10px); }
-.panel::after { content: ""; position: absolute; bottom: 0; right: 0; border-style: solid; border-width: 0 0 20px 20px; border-color: transparent transparent var(--border) transparent; }
+  .logo-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: #fff;
+  }
 
-/* STATS */
-.stat-box { display: none; }
-.stat-box.active { display: block; animation: fadeIn 0.5s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .logo-title span { color: var(--veil); }
 
-.val-display { font-size: 48px; font-family: 'Orbitron'; font-weight: 900; color: var(--white); margin: 10px 0; }
+  .header-links {
+    display: flex;
+    gap: 0.25rem;
+  }
 
-/* TERMINAL */
-.terminal { background: #000; border: 1px solid #1a2233; padding: 25px; position: relative; margin-top: 20px; }
-.terminal pre { margin: 0; color: var(--neon-green); font-size: 14px; white-space: pre-wrap; word-break: break-all; font-weight: 500; }
-.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); border: none; padding: 5px 12px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; font-weight: 900; }
+  .header-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: all 0.2s;
+    letter-spacing: 0.08em;
+  }
 
-/* TAB SYSTEM */
-.tab-nav { display: flex; gap: 5px; margin-top: 20px; }
-.tab-btn { padding: 10px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: var(--accent); cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
-.tab-btn.active { background: var(--panel); border-bottom-color: transparent; border-top: 2px solid var(--accent); color: #fff; }
-.tab-content { border: 1px solid var(--border); padding: 25px; display: none; background: rgba(0,0,0,0.3); }
-.tab-content.active { display: block; }
+  .header-links a:hover {
+    color: var(--veil);
+    border-color: var(--border2);
+    background: var(--glow2);
+  }
 
-input { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; color: #fff; margin-bottom: 20px; outline: none; }
-input:focus { border-color: var(--neon-green); }
+  /* ── HERO ── */
+  .hero {
+    padding: 4rem 2rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: end;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--veil);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--veil);
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .hero-title .accent { color: var(--veil); }
+
+  .hero-sub {
+    margin-top: 1rem;
+    color: var(--text2);
+    font-size: 0.95rem;
+    font-weight: 400;
+    max-width: 460px;
+    line-height: 1.6;
+  }
+
+  /* LIVE STATS STRIP */
+  .stats-strip {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+    min-width: 340px;
+  }
+
+  .stat-cell {
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .stat-cell:last-child { border-right: none; }
+
+  .stat-algo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+  }
+
+  .stat-cell:nth-child(1) .stat-algo { color: var(--rx); }
+  .stat-cell:nth-child(2) .stat-algo { color: var(--pp); }
+  .stat-cell:nth-child(3) .stat-algo { color: var(--sha); }
+
+  .stat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.35rem;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-top: 0.15rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── REWARD BAND ── */
+  .reward-band {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .reward-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .reward-tag {
+    color: var(--text3);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .reward-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 0.2rem 0.65rem;
+    border-radius: 2px;
+    font-size: 0.65rem;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .pill-rx  { background: rgba(38,198,218,0.12); color: var(--rx);  border: 1px solid rgba(38,198,218,0.25); }
+  .pill-pp  { background: rgba(171,71,188,0.12);  color: var(--pp);  border: 1px solid rgba(171,71,188,0.25); }
+  .pill-sha { background: rgba(239,83,80,0.12);   color: var(--sha); border: 1px solid rgba(239,83,80,0.25); }
+
+  .reward-divider { color: var(--text3); flex-shrink: 0; }
+  .reward-note { color: var(--text2); }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+  }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── COMMAND BUILDER ── */
+  .builder-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .card-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--veil);
+    background: rgba(79,195,247,0.08);
+    border: 1px solid rgba(79,195,247,0.2);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .card-body { padding: 1.5rem; }
+
+  /* ALGO SELECTOR */
+  .algo-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .algo-tab {
+    flex: 1;
+    padding: 0.65rem 0.5rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .algo-tab:hover { border-color: var(--border2); }
+
+  .algo-tab.active-rx   { border-color: var(--rx);  background: rgba(38,198,218,0.08); }
+  .algo-tab.active-pp   { border-color: var(--pp);  background: rgba(171,71,188,0.08); }
+  .algo-tab.active-sha  { border-color: var(--sha); background: rgba(239,83,80,0.08); }
+
+  .algo-tab-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  .algo-tab:nth-child(1) .algo-tab-name { color: var(--rx); }
+  .algo-tab:nth-child(2) .algo-tab-name { color: var(--pp); }
+  .algo-tab:nth-child(3) .algo-tab-name { color: var(--sha); }
+
+  .algo-tab-hw {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    margin-top: 0.15rem;
+    display: block;
+  }
+
+  /* FORM ROWS */
+  .form-row {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--text2);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  select, input[type="text"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 0.55rem 0.75rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5560'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+
+  select:focus, input[type="text"]:focus {
+    border-color: var(--veil2);
+    box-shadow: 0 0 0 2px rgba(79,195,247,0.08);
+  }
+
+  /* OUTPUT */
+  .output-block {
+    margin-top: 1.25rem;
+  }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+  }
+
+  .output-pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--veil);
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    min-height: 80px;
+    position: relative;
+  }
+
+  .copy-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--veil);
+    background: rgba(79,195,247,0.08);
+    border: 1px solid rgba(79,195,247,0.25);
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .copy-btn:hover {
+    background: rgba(79,195,247,0.18);
+    border-color: var(--veil);
+  }
+
+  .copy-btn.copied {
+    color: var(--green);
+    border-color: var(--green);
+    background: rgba(102,187,106,0.1);
+  }
+
+  /* FastPool username helper */
+  .fastpool-formats {
+    display: none;
+    margin-top: 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .fastpool-formats.visible { display: block; }
+
+  .fp-format-header {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--rx);
+    padding: 0.4rem 0.75rem;
+    background: rgba(38,198,218,0.06);
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  .fp-format-list {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .fp-format-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.2rem 0;
+    align-items: baseline;
+  }
+
+  .fp-code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .fp-desc {
+    font-size: 0.75rem;
+    color: var(--text3);
+  }
+
+  /* ── RIGHT COLUMN ── */
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ── POOL CARDS ── */
+  .pool-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .pool-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .pool-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .pool-dot-green { background: var(--green); }
+  .pool-dot-blue  { background: var(--rx); }
+
+  .pool-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .pool-url {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--veil);
+    text-decoration: none;
+    margin-left: auto;
+    transition: color 0.2s;
+  }
+
+  .pool-url:hover { color: #fff; }
+
+  .pool-body { padding: 1rem 1.25rem; }
+
+  .pool-algo-tags {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .port-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .port-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+
+  .port-item:last-child { border-bottom: none; }
+
+  .port-num {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--gold);
+    font-size: 0.75rem;
+  }
+
+  .port-desc { color: var(--text2); }
+
+  /* ── SOFTWARE CARD ── */
+  .software-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .sw-section { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .sw-section:last-child { border-bottom: none; }
+
+  .sw-algo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .sw-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sw-algo-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .sw-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sw-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.2rem 0;
+    transition: color 0.2s;
+  }
+
+  .sw-link:hover { color: var(--veil); }
+
+  .sw-link-arrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .sw-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.63rem;
+    color: var(--text3);
+    margin-top: 0.35rem;
+    line-height: 1.5;
+  }
+
+  /* ── FULL-WIDTH BOTTOM SECTION ── */
+  .bottom-section {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* BUILD INSTRUCTIONS */
+  .build-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .build-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .build-tab {
+    padding: 0.65rem 1.25rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--text3);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .build-tab:hover { color: var(--text2); }
+  .build-tab.active { color: var(--veil); border-bottom-color: var(--veil); background: var(--glow2); }
+
+  .build-pane {
+    display: none;
+    padding: 1.25rem;
+  }
+
+  .build-pane.active { display: block; }
+
+  .build-pane pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .build-pane pre .cmd-comment { color: var(--text3); }
+  .build-pane pre .cmd-flag    { color: var(--veil2); }
+
+  .build-pane-note {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text3);
+    line-height: 1.6;
+  }
+
+  /* LINKS CARD */
+  .links-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .links-grid {
+    padding: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .ext-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: all 0.2s;
+    background: var(--bg);
+  }
+
+  .ext-link:hover {
+    border-color: var(--border2);
+    background: var(--bg3);
+    transform: translateY(-1px);
+  }
+
+  .ext-link-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .ext-link-body {}
+
+  .ext-link-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #fff;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .ext-link-desc {
+    font-size: 0.7rem;
+    color: var(--text3);
+    display: block;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--veil); }
+
+  /* ── SOLO MINING CALLOUT ── */
+  .solo-callout {
+    margin-top: 1.25rem;
+    background: rgba(79,195,247,0.04);
+    border: 1px solid rgba(79,195,247,0.15);
+    border-left: 3px solid var(--veil);
+    border-radius: 0 3px 3px 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .solo-callout strong { color: var(--veil); }
+
+  .solo-callout a {
+    color: var(--veil);
+    text-decoration: none;
+  }
+
+  .solo-callout a:hover { text-decoration: underline; }
+
+  /* ── HIVEOS BADGE ── */
+  .hiveos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--green);
+    background: rgba(102,187,106,0.08);
+    border: 1px solid rgba(102,187,106,0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+    margin-left: auto;
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.12s; }
+  .fade-up-3 { animation-delay: 0.19s; }
+  .fade-up-4 { animation-delay: 0.26s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    main { grid-template-columns: 1fr; }
+    .right-col { display: grid; grid-template-columns: 1fr 1fr; }
+    .bottom-section { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 700px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: repeat(3, 1fr); min-width: unset; }
+    .right-col { grid-template-columns: 1fr; }
+    .form-grid-2 { grid-template-columns: 1fr; }
+    .links-grid { grid-template-columns: 1fr; }
+    .header-links { display: none; }
+    .reward-inner { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div class="brand">
-            <h1>VEIL // MINING HUB</h1>
-            <span>2026</span>
-        </div>
-        <div id="clock" class="clock-vfd">00:00:00</div>
-    </header>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-title">VEIL<span> //</span> MINING HUB</span>
+    </a>
+    <nav class="header-links">
+      <a href="#builder">BUILDER</a>
+      <a href="#pools">POOLS</a>
+      <a href="#software">SOFTWARE</a>
+      <a href="#build">BUILD</a>
+      <a href="https://explorer.veil-project.com" target="_blank" rel="noopener">EXPLORER ↗</a>
+      <a href="https://discord.veil-project.com" target="_blank" rel="noopener">DISCORD ↗</a>
+    </nav>
+  </div>
+</header>
 
-    <div class="algo-selector">
-        <div class="algo-pill active" onclick="setAlgo('rx')">RANDOMX (CPU)</div>
-        <div class="algo-pill" onclick="setAlgo('pp')">PROGPOW (GPU)</div>
-        <div class="algo-pill" onclick="setAlgo('sha')">SHA256D (HYBRID)</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="fade-up fade-up-1">
+      <div class="hero-eyebrow">PRIVACY COIN · PROOF-OF-WORK · MULTI-ALGO</div>
+      <h1 class="hero-title">Mine<br><span class="accent">Veil.</span></h1>
+      <p class="hero-sub">Copy-paste ready mining commands for RandomX, ProgPoW, and SHA256D. Supports FastPool, yadaminers, and solo setups.</p>
+    </div>
+    <div class="fade-up fade-up-2">
+      <div class="stats-strip" id="stats-strip">
+        <div class="stat-cell">
+          <div class="stat-algo">RANDOMX</div>
+          <div class="stat-val" id="stat-rx">—</div>
+          <div class="stat-label">DIFFICULTY</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-algo">PROGPOW</div>
+          <div class="stat-val" id="stat-pp">—</div>
+          <div class="stat-label">DIFFICULTY</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-algo">SHA256D</div>
+          <div class="stat-val" id="stat-sha">—</div>
+          <div class="stat-label">DIFFICULTY</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REWARD BAND -->
+<div class="reward-band">
+  <div class="reward-inner">
+    <span class="reward-tag">BLOCK REWARD SPLIT</span>
+    <div class="reward-pills">
+      <span class="pill pill-rx">RANDOMX · 10%</span>
+      <span class="pill pill-pp">PROGPOW · 35%</span>
+      <span class="pill pill-sha">SHA256D · 5%</span>
+    </div>
+    <span class="reward-divider">·</span>
+    <span class="reward-note">50% of daily rewards across all three PoW algos</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- LEFT: COMMAND BUILDER -->
+  <div class="fade-up fade-up-2">
+    <div class="section-label" id="builder">COMMAND BUILDER</div>
+    <div class="builder-card">
+      <div class="card-header">
+        <span class="card-title">Build Mining Command</span>
+        <span class="card-badge">COPY-PASTE READY</span>
+      </div>
+      <div class="card-body">
+
+        <!-- ALGO TABS -->
+        <div class="algo-tabs" role="group" aria-label="Mining Algorithm">
+          <div class="algo-tab active-rx" id="tab-rx" onclick="setAlgo('rx')" role="button" tabindex="0">
+            <span class="algo-tab-name">RandomX</span>
+            <span class="algo-tab-hw">CPU</span>
+          </div>
+          <div class="algo-tab" id="tab-pp" onclick="setAlgo('pp')" role="button" tabindex="0">
+            <span class="algo-tab-name">ProgPoW</span>
+            <span class="algo-tab-hw">GPU</span>
+          </div>
+          <div class="algo-tab" id="tab-sha" onclick="setAlgo('sha')" role="button" tabindex="0">
+            <span class="algo-tab-name">SHA256D</span>
+            <span class="algo-tab-hw">CPU/GPU</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label class="form-label" for="pool-select">POOL</label>
+            <select id="pool-select" onchange="onPoolChange()">
+              <option value="yadaminers">yadaminers.pl (multi-algo)</option>
+              <option value="fastpool">FastPool (RandomX only)</option>
+              <option value="solo">SOLO (stratum proxy)</option>
+            </select>
+          </div>
+          <div id="port-row">
+            <label class="form-label" for="port-select">PORT / TIER</label>
+            <select id="port-select" onchange="buildCommand()"></select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label class="form-label" for="os-select">OS</label>
+            <select id="os-select" onchange="buildCommand()">
+              <option value="linux">Linux</option>
+              <option value="windows">Windows</option>
+            </select>
+          </div>
+          <div id="miner-row">
+            <label class="form-label" for="miner-select">MINER SOFTWARE</label>
+            <select id="miner-select" onchange="buildCommand()"></select>
+          </div>
+        </div>
+
+        <div class="form-row" id="worker-row">
+          <label class="form-label" for="worker-input">WORKER NAME <span style="color:var(--text3)">(optional)</span></label>
+          <input type="text" id="worker-input" placeholder="rig1" oninput="buildCommand()">
+        </div>
+
+        <div class="form-row">
+          <label class="form-label" for="wallet-input">WALLET ADDRESS</label>
+          <input type="text" id="wallet-input" placeholder="sv1qYourVeilAddress..." oninput="buildCommand()">
+        </div>
+
+        <!-- FastPool formats helper -->
+        <div class="fastpool-formats" id="fastpool-formats">
+          <div class="fp-format-header">FASTPOOL USERNAME FORMATS</div>
+          <div class="fp-format-list">
+            <div class="fp-format-item"><span class="fp-code">ADDRESS</span><span class="fp-desc">Basic</span></div>
+            <div class="fp-format-item"><span class="fp-code">solo:ADDRESS</span><span class="fp-desc">Solo mode</span></div>
+            <div class="fp-format-item"><span class="fp-code">ADDRESS@worker</span><span class="fp-desc">Named worker</span></div>
+            <div class="fp-format-item"><span class="fp-code">ADDRESS.diff@worker</span><span class="fp-desc">Difficulty lock</span></div>
+            <div class="fp-format-item"><span class="fp-code">ADDRESS.payID@worker</span><span class="fp-desc">Payment ID</span></div>
+          </div>
+        </div>
+
+        <div class="output-block">
+          <div class="output-header">
+            <label class="form-label" style="margin:0">GENERATED COMMAND</label>
+            <button class="copy-btn" id="copy-btn" onclick="copyCommand()">⧉ COPY</button>
+          </div>
+          <div class="output-pre" id="output-pre">Select options above to generate command</div>
+        </div>
+
+        <div class="solo-callout" id="solo-note" style="display:none">
+          <strong>SOLO MINING:</strong> Requires a running Veil node + stratum proxy on your machine.
+          See <a href="https://github.com/ohcee/veil-node-stratum-proxy" target="_blank" rel="noopener">veil-node-stratum-proxy</a> for setup.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col fade-up fade-up-3">
+
+    <!-- POOLS -->
+    <div id="pools">
+      <div class="section-label">MINING POOLS</div>
+      <div class="pool-card">
+
+        <div class="pool-header">
+          <span class="pool-dot pool-dot-green"></span>
+          <span class="pool-name">yadaminers.pl</span>
+          <span class="hiveos-badge">⬡ HiveOS</span>
+          <a class="pool-url" href="https://veil.yadaminers.pl" target="_blank" rel="noopener">veil.yadaminers.pl ↗</a>
+        </div>
+        <div class="pool-body">
+          <div class="pool-algo-tags">
+            <span class="pill pill-rx">RANDOMX</span>
+            <span class="pill pill-pp">PROGPOW</span>
+            <span class="pill pill-sha">SHA256D</span>
+          </div>
+          <ul class="port-list">
+            <li class="port-item"><span class="port-desc">SHA256D</span><span class="port-num">:3333</span></li>
+            <li class="port-item"><span class="port-desc">ProgPoW</span><span class="port-num">:3334</span></li>
+            <li class="port-item"><span class="port-desc">RandomX</span><span class="port-num">:3335</span></li>
+          </ul>
+        </div>
+
+        <div class="pool-header" style="border-top:1px solid var(--border)">
+          <span class="pool-dot pool-dot-blue"></span>
+          <span class="pool-name">FastPool</span>
+          <a class="pool-url" href="https://fastpool.xyz/veil-rx/" target="_blank" rel="noopener">fastpool.xyz ↗</a>
+        </div>
+        <div class="pool-body">
+          <div class="pool-algo-tags">
+            <span class="pill pill-rx">RANDOMX ONLY</span>
+          </div>
+          <ul class="port-list">
+            <li class="port-item"><span class="port-desc">Low-end (diff 25k)</span><span class="port-num">:10281</span></li>
+            <li class="port-item"><span class="port-desc">Mid-end (diff 100k)</span><span class="port-num">:10282</span></li>
+            <li class="port-item"><span class="port-desc">SSL (diff 25k)</span><span class="port-num">:10285</span></li>
+          </ul>
+          <div class="sw-note" style="margin-top:0.5rem">Algo: rx/veil · Password: x</div>
+        </div>
+      </div>
     </div>
 
-    <div class="main-grid">
-        <aside>
-            <div class="panel">
-                <div id="rx-stat" class="stat-box active">
-                    <div class="label" style="color:var(--accent)">RANDOMX DIFFICULTY</div>
-                    <div id="rx-val" class="val-display">0.00</div>
-                    <div style="font-size:11px; color:var(--neon-green)">NETWORK: XMRig-Veil Optimized</div>
-                </div>
-                <div id="pp-stat" class="stat-box">
-                    <div class="label" style="color:var(--neon-green)">PROGPOW DIFFICULTY</div>
-                    <div id="pp-val" class="val-display">0.00</div>
-                    <div style="font-size:11px; color:var(--accent)">MINERS: T-Rex (Nvidia) / WildRig (AMD)</div>
-                </div>
-                <div id="sha-stat" class="stat-box">
-                    <div class="label" style="color:var(--neon-red)">SHA256D DIFFICULTY</div>
-                    <div id="sha-val" class="val-display">0.00</div>
-                    <div style="font-size:11px; color:var(--neon-purple)">SOURCE: cpuminer-opt-veil</div>
-                </div>
+    <!-- SOFTWARE -->
+    <div id="software">
+      <div class="section-label">MINING SOFTWARE</div>
+      <div class="software-card">
+        <div class="sw-section">
+          <div class="sw-algo-label">
+            <span class="sw-dot" style="background:var(--rx)"></span>
+            <span class="sw-algo-name" style="color:var(--rx)">RandomX — CPU</span>
+          </div>
+          <div class="sw-links">
+            <a class="sw-link" href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> xmrig-veil (ohcee fork)
+            </a>
+          </div>
+          <div class="sw-note">Source build required. Windows: build from source or grab artifacts.</div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-algo-label">
+            <span class="sw-dot" style="background:var(--pp)"></span>
+            <span class="sw-algo-name" style="color:var(--pp)">ProgPoW — GPU</span>
+          </div>
+          <div class="sw-links">
+            <a class="sw-link" href="https://github.com/trexminer/t-rex/releases" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> T-Rex (NVIDIA)
+            </a>
+            <a class="sw-link" href="https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> WildRig Multi 0.40.6 (AMD)
+            </a>
+          </div>
+          <div class="sw-note">Use WildRig 0.40.6 specifically — last known working version for AMD.</div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-algo-label">
+            <span class="sw-dot" style="background:var(--sha)"></span>
+            <span class="sw-algo-name" style="color:var(--sha)">SHA256D — CPU</span>
+          </div>
+          <div class="sw-links">
+            <a class="sw-link" href="https://github.com/Rakni1988/cpuminer-opt-veil" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> cpuminer-opt-veil
+            </a>
+          </div>
+          <div class="sw-note">Rakni1988 fork. Source build.</div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-algo-label">
+            <span class="sw-dot" style="background:var(--gold)"></span>
+            <span class="sw-algo-name" style="color:var(--gold)">SOLO — Stratum Proxy</span>
+          </div>
+          <div class="sw-links">
+            <a class="sw-link" href="https://github.com/ohcee/veil-node-stratum-proxy/tree/Fix-keepalived-error" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> veil-node-stratum-proxy
+            </a>
+          </div>
+          <div class="sw-note">Bridges your Veil node to T-Rex / XMRig for solo mining without a pool.</div>
+        </div>
+      </div>
+    </div>
 
-                <hr style="border:0; border-top:1px solid var(--border); margin: 30px 0;">
+  </div>
+</main>
 
-                <div class="label" style="margin-bottom:10px;">RECEIVING ADDRESS</div>
-                <input id="addr" placeholder="PASTE ADDRESS..." oninput="updateCmd()">
+<!-- BOTTOM: BUILD + LINKS -->
+<div class="bottom-section">
 
-                <div class="label" style="margin-bottom:10px;">EXECUTION STRING</div>
-                <div class="terminal">
-                    <button class="copy-btn" onclick="copy()">COPY</button>
-                    <pre id="out">./xmrig -a rx/veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ADDRESS -p x</pre>
-                </div>
+  <!-- BUILD INSTRUCTIONS -->
+  <div id="build" class="fade-up fade-up-3">
+    <div class="section-label">BUILD INSTRUCTIONS</div>
+    <div class="build-card">
+      <div class="build-tabs">
+        <div class="build-tab active" onclick="showBuildTab('xmrig', this)">XMRIG-VEIL</div>
+        <div class="build-tab" onclick="showBuildTab('cpu', this)">CPUMINER</div>
+        <div class="build-tab" onclick="showBuildTab('gpu', this)">GPU (T-REX)</div>
+        <div class="build-tab" onclick="showBuildTab('proxy', this)">SOLO PROXY</div>
+      </div>
 
-                <div style="margin-top:40px;">
-                    <div class="label" style="margin-bottom:15px;">DEVELOPER SOURCES</div>
-                    <a href="https://github.com/ohcee/xmrig-veil" style="display:block; color:var(--accent); font-size:12px; margin-bottom:8px; text-decoration:none;">>> xmrig-veil [Official CPU]</a>
-                    <a href="https://github.com/Rakni1988/cpuminer-opt-veil" style="display:block; color:var(--accent); font-size:12px; margin-bottom:8px; text-decoration:none;">>> cpuminer-opt-veil [SHA256d]</a>
-                    <a href="https://github.com/ohcee/veil-node-stratum-proxy" style="display:block; color:var(--accent); font-size:12px; text-decoration:none;">>> veil-stratum-proxy [Solo]</a>
-                </div>
-            </div>
-        </aside>
-
-        <main>
-            <div class="panel" style="margin-bottom:30px;">
-                <div class="label" style="margin-bottom:20px;">DIFFICULTY PROPAGATION MATRIX</div>
-                <div style="height: 350px;"><canvas id="mainChart"></canvas></div>
-            </div>
-
-            <div class="tab-nav">
-                <button class="tab-btn active" onclick="tab(event, 'b-xmrig')">BUILD XMRIG (CPU)</button>
-                <button class="tab-btn" onclick="tab(event, 'b-sha')">BUILD SHA-OP (CPU)</button>
-                <button class="tab-btn" onclick="tab(event, 'b-gpu')">GPU SETUP (NVIDIA/AMD)</button>
-            </div>
-
-            <div id="b-xmrig" class="tab-content active">
-                <pre style="color:var(--white)"># Build instructions for XMRig-Veil
+      <div class="build-pane active" id="pane-xmrig">
+<pre><span class="cmd-comment"># Clone and build XMRig-Veil (CPU / RandomX)</span>
 git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake ..
 make -j$(nproc)</pre>
-            </div>
-            <div id="b-sha" class="tab-content">
-                <pre style="color:var(--white)"># Build instructions for cpuminer-opt-veil
+        <div class="build-pane-note">Requires cmake, gcc/clang, libuv, libssl. On Debian/Ubuntu: <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">apt install build-essential cmake libuv1-dev libssl-dev</code></div>
+      </div>
+
+      <div class="build-pane" id="pane-cpu">
+<pre><span class="cmd-comment"># Clone and build cpuminer-opt-veil (SHA256D)</span>
 git clone https://github.com/Rakni1988/cpuminer-opt-veil.git
 cd cpuminer-opt-veil
 ./autogen.sh
-./configure CFLAGS="-O3 -march=native" --with-curl --with-crypto
+./configure CFLAGS="-O3 -march=native" \
+  --with-curl --with-crypto
 make -j$(nproc)</pre>
-            </div>
-            <div id="b-gpu" class="tab-content">
-                <p style="color:var(--accent); font-weight:800;">NVIDIA (T-REX):</p>
-                <pre style="color:#fff">t-rex -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ADDR -p x</pre>
-                <p style="color:var(--neon-green); font-weight:800; margin-top:20px;">AMD (WILDRIG):</p>
-                <pre style="color:#fff">wildrig -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ADDR -p x</pre>
-            </div>
-        </main>
+        <div class="build-pane-note">Requires autoconf, libcurl-dev, libssl-dev.</div>
+      </div>
+
+      <div class="build-pane" id="pane-gpu">
+<pre><span class="cmd-comment"># T-Rex — NVIDIA (ProgPoW-Veil)</span>
+<span class="cmd-comment"># Download latest release from GitHub, then:</span>
+./t-rex -a progpow-veil \
+  -o stratum+tcp://veil.yadaminers.pl:3334 \
+  -u YOUR_ADDRESS \
+  -p x \
+  --worker rig1
+
+<span class="cmd-comment"># WildRig Multi 0.40.6 — AMD (ProgPoW-Veil)</span>
+./wildrig -a progpow-veil \
+  -o stratum+tcp://veil.yadaminers.pl:3334 \
+  -u YOUR_ADDRESS \
+  -p x</pre>
+        <div class="build-pane-note">AMD: Use WildRig 0.40.6 specifically — later versions may not work with ProgPoW-Veil.</div>
+      </div>
+
+      <div class="build-pane" id="pane-proxy">
+<pre><span class="cmd-comment"># veil-node-stratum-proxy (solo mining bridge)</span>
+git clone -b Fix-keepalived-error \
+  https://github.com/ohcee/veil-node-stratum-proxy
+cd veil-node-stratum-proxy
+npm install
+
+<span class="cmd-comment"># Configure your node RPC in config.json, then:</span>
+node proxy.js
+
+<span class="cmd-comment"># Then point your miner at localhost:3333</span></pre>
+        <div class="build-pane-note">Your Veil node must be running with RPC enabled. See repo README for config details.</div>
+      </div>
     </div>
+  </div>
+
+  <!-- EXTERNAL LINKS -->
+  <div class="fade-up fade-up-4">
+    <div class="section-label">RESOURCES</div>
+    <div class="links-card">
+      <div class="links-grid">
+        <a class="ext-link" href="https://explorer.veil-project.com" target="_blank" rel="noopener">
+          <span class="ext-link-icon">🔍</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Explorer</span>
+            <span class="ext-link-desc">Block explorer</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://veil-stats.com" target="_blank" rel="noopener">
+          <span class="ext-link-icon">📊</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Network Stats</span>
+            <span class="ext-link-desc">veil-stats.com</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://whattomine.com/coins/286-veil-progpow" target="_blank" rel="noopener">
+          <span class="ext-link-icon">💰</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Profitability</span>
+            <span class="ext-link-desc">WhatToMine</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://miningpoolstats.stream/veil-randomx" target="_blank" rel="noopener">
+          <span class="ext-link-icon">🌐</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Pool Stats</span>
+            <span class="ext-link-desc">MiningPoolStats</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://veil-project.com/mining/" target="_blank" rel="noopener">
+          <span class="ext-link-icon">📋</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Official Mining</span>
+            <span class="ext-link-desc">veil-project.com</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://discord.veil-project.com" target="_blank" rel="noopener">
+          <span class="ext-link-icon">💬</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Discord</span>
+            <span class="ext-link-desc">Dev + miner chat</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://github.com/Veil-Project/veil/releases" target="_blank" rel="noopener">
+          <span class="ext-link-icon">📦</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Wallet Releases</span>
+            <span class="ext-link-desc">Latest node/wallet</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://veil.tools" target="_blank" rel="noopener">
+          <span class="ext-link-icon">🔧</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Veil Tools</span>
+            <span class="ext-link-desc">veil.tools</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">VEIL MINING HUB · OHCEE · 2026 · MIT LICENSE</span>
+    <div class="footer-links">
+      <a href="https://github.com/ohcee/veil-mining-hub" target="_blank" rel="noopener">GITHUB</a>
+      <a href="https://veil-project.com" target="_blank" rel="noopener">VEIL-PROJECT.COM</a>
+      <a href="difficulty.html">DIFFICULTY CHARTS</a>
+    </div>
+  </div>
+</footer>
+
 <script>
+// ── STATE ──────────────────────────────────────────────────────────────────
 let currentAlgo = 'rx';
-let chart;
 
+const POOLS = {
+  rx: [
+    { label: 'yadaminers  :3335', value: 'yadaminers', host: 'veil.yadaminers.pl', port: '3335' },
+    { label: 'FastPool :10281 (low-end, diff 25k)', value: 'fp10281', host: 'fastpool.xyz', port: '10281', isFastPool: true },
+    { label: 'FastPool :10282 (mid-end, diff 100k)', value: 'fp10282', host: 'fastpool.xyz', port: '10282', isFastPool: true },
+    { label: 'FastPool :10285 (SSL, diff 25k)', value: 'fp10285', host: 'fastpool.xyz', port: '10285', ssl: true, isFastPool: true },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+  ],
+  pp: [
+    { label: 'yadaminers  :3334', value: 'yadaminers', host: 'veil.yadaminers.pl', port: '3334' },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+  ],
+  sha: [
+    { label: 'yadaminers  :3333', value: 'yadaminers', host: 'veil.yadaminers.pl', port: '3333' },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+  ],
+};
+
+const MINERS = {
+  rx: {
+    linux:   [{ label: 'xmrig-veil', bin: './xmrig' }],
+    windows: [{ label: 'xmrig-veil', bin: 'xmrig.exe' }],
+  },
+  pp: {
+    linux:   [
+      { label: 'T-Rex (NVIDIA)',       bin: './t-rex',    flag: '-a progpow-veil' },
+      { label: 'WildRig 0.40.6 (AMD)', bin: './wildrig',  flag: '-a progpow-veil' },
+    ],
+    windows: [
+      { label: 'T-Rex (NVIDIA)',       bin: 't-rex.exe',    flag: '-a progpow-veil' },
+      { label: 'WildRig 0.40.6 (AMD)', bin: 'wildrig.exe',  flag: '-a progpow-veil' },
+    ],
+  },
+  sha: {
+    linux:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d' }],
+    windows: [{ label: 'cpuminer-opt-veil', bin: 'cpuminer.exe', flag: '-a sha256d' }],
+  },
+};
+
+// ── ALGO ALGO ─────────────────────────────────────────────────────────────
 function setAlgo(algo) {
-    currentAlgo = algo;
-    // Update Toggle Pills
-    document.querySelectorAll('.algo-pill').forEach(p => p.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    
-    // Update Stat Boxes
-    document.querySelectorAll('.stat-box').forEach(b => b.classList.remove('active'));
-    document.getElementById(algo + '-stat').classList.add('active');
-    
-    updateCmd();
-    updateChartHighlight();
+  currentAlgo = algo;
+  ['rx','pp','sha'].forEach(a => {
+    const tab = document.getElementById('tab-' + a);
+    tab.className = 'algo-tab' + (a === algo ? ' active-' + a : '');
+  });
+  refreshPorts();
+  refreshMiners();
+  buildCommand();
 }
 
-function updateCmd() {
-    const addr = document.getElementById('addr').value || "YOUR_ADDRESS";
-    const out = document.getElementById('out');
-    
-    if(currentAlgo === 'rx') {
-        out.innerText = `./xmrig -a rx/veil -o stratum+tcp://veil.yadaminers.pl:3335 -u ${addr} -p x`;
-    } else if(currentAlgo === 'pp') {
-        // T-Rex / WildRig typically use port 3336 or 3338 on multi-pools
-        out.innerText = `t-rex -a progpow-veil -o stratum+tcp://veil.yadaminers.pl:3336 -u ${addr} -p x`;
-    } else {
-        // SHA port usually 3334
-        out.innerText = `./cpuminer -a sha256dv -o stratum+tcp://veil.yadaminers.pl:3334 -u ${addr} -p x`;
+function refreshPorts() {
+  const sel = document.getElementById('port-select');
+  sel.innerHTML = '';
+  (POOLS[currentAlgo] || []).forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.value;
+    o.textContent = p.label;
+    sel.appendChild(o);
+  });
+}
+
+function refreshMiners() {
+  const os = document.getElementById('os-select').value;
+  const sel = document.getElementById('miner-select');
+  sel.innerHTML = '';
+  (MINERS[currentAlgo]?.[os] || []).forEach((m, i) => {
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = m.label;
+    sel.appendChild(o);
+  });
+}
+
+function onPoolChange() { buildCommand(); }
+
+// ── BUILD COMMAND ──────────────────────────────────────────────────────────
+function buildCommand() {
+  const poolOpts = POOLS[currentAlgo] || [];
+  const portSel  = document.getElementById('port-select');
+  const pool     = poolOpts.find(p => p.value === portSel.value) || poolOpts[0];
+  if (!pool) return;
+
+  const os         = document.getElementById('os-select').value;
+  const minerIdx   = parseInt(document.getElementById('miner-select').value) || 0;
+  const miner      = MINERS[currentAlgo]?.[os]?.[minerIdx];
+  const wallet     = document.getElementById('wallet-input').value.trim() || 'YOUR_ADDRESS';
+  const worker     = document.getElementById('worker-input').value.trim();
+  if (!miner) return;
+
+  const proto  = pool.ssl ? 'stratum+ssl' : 'stratum+tcp';
+  const host   = `${proto}://${pool.host}:${pool.port}`;
+  const algo   = currentAlgo === 'rx' ? '-a rx/veil' : (miner.flag || '');
+  const user   = pool.isFastPool
+    ? (worker ? `${wallet}@${worker}` : wallet)
+    : (worker ? `${wallet}` : wallet);
+  const workerPart = (!pool.isFastPool && worker) ? ` --worker ${worker}` : '';
+
+  let cmd = `${miner.bin} ${algo} -o ${host} -u ${user} -p x${workerPart}`;
+
+  document.getElementById('output-pre').textContent = cmd;
+  document.getElementById('fastpool-formats').classList.toggle('visible', !!pool.isFastPool);
+  document.getElementById('solo-note').style.display = pool.solo ? 'block' : 'none';
+}
+
+// ── COPY ──────────────────────────────────────────────────────────────────
+function copyCommand() {
+  const text = document.getElementById('output-pre').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ COPIED';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '⧉ COPY'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// ── BUILD TABS ────────────────────────────────────────────────────────────
+function showBuildTab(id, el) {
+  document.querySelectorAll('.build-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.build-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-' + id).classList.add('active');
+}
+
+// ── LIVE DIFFICULTY ────────────────────────────────────────────────────────
+async function loadDifficulty() {
+  try {
+    const res  = await fetch('./data/difficulty.json');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    function lastVal(arr) {
+      if (!arr || arr.length === 0) return null;
+      return arr[arr.length - 1].d;
     }
+
+    function fmt(v) {
+      if (v == null) return '—';
+      if (v >= 1e12) return (v/1e12).toFixed(2) + 'T';
+      if (v >= 1e9)  return (v/1e9).toFixed(2)  + 'G';
+      if (v >= 1e6)  return (v/1e6).toFixed(2)  + 'M';
+      if (v >= 1e3)  return (v/1e3).toFixed(1)  + 'k';
+      return v.toFixed(4);
+    }
+
+    document.getElementById('stat-rx').textContent  = fmt(lastVal(data.randomx));
+    document.getElementById('stat-pp').textContent  = fmt(lastVal(data.progpow));
+    document.getElementById('stat-sha').textContent = fmt(lastVal(data.sha256d));
+  } catch (e) {
+    // difficulty.json missing or API unreachable — silently leave dashes
+  }
 }
 
-function tab(e, id) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    e.currentTarget.classList.add('active');
-}
+// ── INIT ──────────────────────────────────────────────────────────────────
+refreshPorts();
+refreshMiners();
+buildCommand();
+loadDifficulty();
 
-async function loadData() {
-    try {
-        const res = await fetch('data/difficulty.json');
-        const data = await res.json();
-        
-        document.getElementById('rx-val').innerText = data.randomx[data.randomx.length-1].d.toLocaleString();
-        document.getElementById('pp-val').innerText = data.progpow[data.progpow.length-1].d.toLocaleString();
-        document.getElementById('sha-val').innerText = data.sha256d[data.sha256d.length-1].d.toLocaleString();
+// Keyboard support for algo tabs
+document.querySelectorAll('.algo-tab').forEach(tab => {
+  tab.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const algo = tab.id.replace('tab-', '');
+      setAlgo(algo);
+    }
+  });
+});
 
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        if(chart) chart.destroy();
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.randomx.map((_, i) => i),
-                datasets: [
-                    { label: 'RandomX', data: data.randomx.map(d=>d.d), borderColor: '#00f2ff', tension: 0.4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)' },
-                    { label: 'ProgPoW', data: data.progpow.map(d=>d.d), borderColor: '#39ff14', tension: 0.4, pointRadius: 0 },
-                    { label: 'SHA256d', data: data.sha256d.map(d=>d.d), borderColor: '#ff0055', tension: 0.4, pointRadius: 0 }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#fff', font: { family: 'Orbitron' } } } },
-                scales: {
-                    x: { display: false },
-                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
-                }
-            }
-        });
-    } catch(e) { console.warn("Awaiting data/difficulty.json feed..."); }
-}
-
-function copy() {
-    navigator.clipboard.writeText(document.getElementById('out').innerText);
-    const b = document.querySelector('.copy-btn');
-    b.innerText = "COPIED!";
-    setTimeout(() => b.innerText = "COPY", 2000);
-}
-
-setInterval(() => {
-    document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
-}, 1000);
-
-window.onload = () => { loadData(); updateCmd(); };
+// Re-run miner refresh when OS changes
+document.getElementById('os-select').addEventListener('change', () => {
+  refreshMiners();
+  buildCommand();
+});
 </script>
 </body>
 </html>
