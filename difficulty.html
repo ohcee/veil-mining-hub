@@ -1,343 +1,472 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Veil Mining Difficulty</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEIL // DIFFICULTY CHARTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{
-  --bg:#0b0f17; --card:#0f172a; --border:#1f2a44;
-  --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:var(--bg);
-  color:var(--text);
-  overflow-y:scroll;   /* prevents scrollbar flicker -> resize loop */
-  overflow-x:hidden;
-}
-.wrap{max-width:1100px;margin:auto;padding:24px}
-header{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--card);
-  padding:16px;
-}
-h1{margin:0 0 6px;font-size:22px}
-.sub{margin:0;color:var(--muted)}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.btn{
-  border:1px solid var(--border);
-  background:#020617;
-  color:var(--text);
-  padding:9px 12px;
-  border-radius:12px;
-  cursor:pointer;
-  text-decoration:none;
-}
-.grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
-.card{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--card);
-  padding:16px;
-  overflow:hidden;
-}
-.card h3{margin:0 0 10px}
-.small{color:var(--muted);font-size:12px;margin-top:8px}
-.canvasWrap{
-  width:100%;
-  height:320px;
-  background:#020617;
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;
-  overflow:hidden;
-}
-canvas{
-  display:block;
-  width:100%;
-  height:100%;
-}
-pre{
-  margin:0;
-  white-space:pre-wrap;
-  background:#020617;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
-  overflow:auto;
-  max-height:260px;
-  color:#cbd5e1;
-}
-code{color:#cbd5e1}
-footer{margin-top:16px;text-align:center;color:var(--muted);font-size:12px}
+  :root {
+    --bg:     #0a0c10;
+    --bg2:    #0f1218;
+    --bg3:    #141820;
+    --border: #1e2530;
+    --border2:#2a3240;
+    --veil:   #4fc3f7;
+    --rx:     #26c6da;
+    --pp:     #ab47bc;
+    --sha:    #ef5350;
+    --text:   #c8d0dc;
+    --text2:  #7a8898;
+    --text3:  #4a5560;
+    --green:  #66bb6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .logo-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: #fff;
+  }
+
+  .logo-title span { color: var(--veil); }
+
+  .header-links {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .header-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: all 0.2s;
+    letter-spacing: 0.08em;
+  }
+
+  .header-links a:hover, .header-links a.active {
+    color: var(--veil);
+    border-color: var(--border2);
+    background: rgba(79,195,247,0.05);
+  }
+
+  .page-hero {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--veil);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-eyebrow::before { content:''; display:block; width:24px; height:1px; background:var(--veil); }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .hero-title .accent { color: var(--veil); }
+
+  .hero-meta {
+    margin-top: 0.75rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+  }
+
+  .chart-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .chart-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .chart-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .chart-algo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .chart-algo-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .chart-hw {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    margin-left: 0.25rem;
+  }
+
+  .chart-latest {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+
+  .chart-latest strong {
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .chart-body {
+    padding: 1.25rem 1.5rem;
+    height: 220px;
+    position: relative;
+  }
+
+  .chart-body canvas { max-height: 100%; }
+
+  .chart-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--veil); }
+
+  @media (max-width: 700px) {
+    .header-links { display: none; }
+    .footer-inner { flex-direction: column; }
+  }
 </style>
 </head>
-
 <body>
-<div class="wrap">
 
 <header>
-  <h1>Veil Mining Difficulty</h1>
-  <!-- <p class="sub">Loads <code>./data/difficulty.json</code> and plots difficulty history per algo.</p> -->
-  <div class="row">
-    <button class="btn" id="refresh">Refresh</button>
-    <a class="btn" href="./index.html">Back</a>
-    <a class="btn" href="./data/difficulty.json" target="_blank" rel="noopener">View JSON</a>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-title">VEIL<span> //</span> MINING HUB</span>
+    </a>
+    <nav class="header-links">
+      <a href="index.html#builder">BUILDER</a>
+      <a href="index.html#pools">POOLS</a>
+      <a href="index.html#software">SOFTWARE</a>
+      <a href="difficulty.html" class="active">DIFFICULTY</a>
+      <a href="https://explorer.veil-project.com" target="_blank" rel="noopener">EXPLORER ↗</a>
+    </nav>
   </div>
 </header>
 
-<div class="grid">
-  <div class="card">
-    <h3>RandomX</h3>
-    <div class="canvasWrap"><canvas id="rx"></canvas></div>
-    <div class="small" id="rxNote"></div>
+<div class="page-hero">
+  <div class="hero-eyebrow">HISTORICAL DATA · UPDATED DAILY</div>
+  <h1 class="hero-title">Mining <span class="accent">Difficulty</span></h1>
+  <div class="hero-meta" id="updated-label">LOADING DATA…</div>
+</div>
+
+<div class="chart-grid">
+
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-algo-dot" style="background:var(--rx)"></span>
+      <span class="chart-algo-name" style="color:var(--rx)">RandomX</span>
+      <span class="chart-hw">CPU</span>
+      <span class="chart-latest" id="rx-latest"></span>
+    </div>
+    <div class="chart-body">
+      <canvas id="chart-rx"></canvas>
+      <div class="chart-empty" id="empty-rx" style="display:none">NO DATA IN difficulty.json</div>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>ProgPoW</h3>
-    <div class="canvasWrap"><canvas id="pp"></canvas></div>
-    <div class="small" id="ppNote"></div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-algo-dot" style="background:var(--pp)"></span>
+      <span class="chart-algo-name" style="color:var(--pp)">ProgPoW</span>
+      <span class="chart-hw">GPU</span>
+      <span class="chart-latest" id="pp-latest"></span>
+    </div>
+    <div class="chart-body">
+      <canvas id="chart-pp"></canvas>
+      <div class="chart-empty" id="empty-pp" style="display:none">NO DATA IN difficulty.json</div>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>SHA256d</h3>
-    <div class="canvasWrap"><canvas id="sha"></canvas></div>
-    <div class="small" id="shaNote"></div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-algo-dot" style="background:var(--sha)"></span>
+      <span class="chart-algo-name" style="color:var(--sha)">SHA256D</span>
+      <span class="chart-hw">CPU/GPU</span>
+      <span class="chart-latest" id="sha-latest"></span>
+    </div>
+    <div class="chart-body">
+      <canvas id="chart-sha"></canvas>
+      <div class="chart-empty" id="empty-sha" style="display:none">NO DATA IN difficulty.json</div>
+    </div>
   </div>
-
-  <!-- <div class="card">
-     <h3>Debug</h3> 
-    <pre id="debug">Waiting…</pre>
-  </div>
-</div> -->
-
-<footer>Veil Mining Hub • community-run</footer>
 
 </div>
 
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">VEIL MINING HUB · OHCEE · 2026</span>
+    <div class="footer-links">
+      <a href="index.html">← MINING HUB</a>
+      <a href="https://github.com/ohcee/veil-mining-hub" target="_blank" rel="noopener">GITHUB</a>
+      <a href="https://explorer.veil-project.com" target="_blank" rel="noopener">EXPLORER</a>
+    </div>
+  </div>
+</footer>
+
 <script>
-const DATA_URL = "./data/difficulty.json";
-const dbgEl = document.getElementById("debug");
+Chart.defaults.color = '#4a5560';
+Chart.defaults.borderColor = '#1e2530';
+Chart.defaults.font.family = "'Share Tech Mono', monospace";
+Chart.defaults.font.size = 11;
 
-function dbg(msg){ dbgEl.textContent = msg; }
-
-function nice(n){
-  if (!Number.isFinite(n)) return "n/a";
-  const a = Math.abs(n);
-  if (a >= 1e12) return (n/1e12).toFixed(2) + "T";
-  if (a >= 1e9)  return (n/1e9).toFixed(2) + "B";
-  if (a >= 1e6)  return (n/1e6).toFixed(2) + "M";
-  if (a >= 1e3)  return (n/1e3).toFixed(2) + "K";
-  if (a !== 0 && a < 0.01) return n.toExponential(4);
-  return String(+n.toFixed(8));
+function fmtD(v) {
+  if (v == null) return '—';
+  if (v >= 1e12) return (v/1e12).toFixed(3) + 'T';
+  if (v >= 1e9)  return (v/1e9).toFixed(3)  + 'G';
+  if (v >= 1e6)  return (v/1e6).toFixed(3)  + 'M';
+  if (v >= 1e3)  return (v/1e3).toFixed(2)  + 'k';
+  return v.toPrecision(4);
 }
 
-// Make canvas pixel-perfect without triggering layout growth.
-function fitCanvasToCSS(canvas){
-  const wrap = canvas.parentElement; // .canvasWrap
-  const rect = wrap.getBoundingClientRect();
-  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); // cap DPR to avoid huge memory
-  const w = Math.floor(rect.width * dpr);
-  const h = Math.floor(rect.height * dpr);
-  if (canvas.width !== w || canvas.height !== h) {
-    canvas.width = w;
-    canvas.height = h;
-  }
-  return { w, h, dpr };
+function fmtDate(t) {
+  const d = new Date(t);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function fmtDate(iso){
-  if (!iso) return "";
-  const dt = new Date(iso);
-  if (Number.isNaN(dt.getTime())) return String(iso);
-  // Example: "12-16 14:23" (UTC)
-  const MM = String(dt.getUTCMonth() + 1).padStart(2, "0");
-  const DD = String(dt.getUTCDate()).padStart(2, "0");
-  const hh = String(dt.getUTCHours()).padStart(2, "0");
-  const mm = String(dt.getUTCMinutes()).padStart(2, "0");
-  return `${MM}-${DD} ${hh}:${mm}`;
+function makeChart(canvasId, data, color) {
+  if (!data || data.length === 0) return null;
+  const labels = data.map(p => fmtDate(p.t));
+  const values = data.map(p => p.d);
+
+  return new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: color,
+        borderWidth: 1.5,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: color,
+        fill: true,
+        backgroundColor: (ctx) => {
+          const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+          g.addColorStop(0, color + '22');
+          g.addColorStop(1, color + '00');
+          return g;
+        },
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 600 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#141820',
+          borderColor: '#2a3240',
+          borderWidth: 1,
+          titleColor: '#7a8898',
+          bodyColor: '#fff',
+          padding: 10,
+          callbacks: {
+            label: (ctx) => ' ' + fmtD(ctx.parsed.y),
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#1e2530' },
+          ticks: {
+            maxTicksLimit: 8,
+            maxRotation: 0,
+          }
+        },
+        y: {
+          grid: { color: '#1e2530' },
+          ticks: {
+            callback: (v) => fmtD(v),
+          }
+        }
+      }
+    }
+  });
 }
 
-// Convert your JSON arrays into [{t,d}, ...], sorted, numeric-only.
-function toPoints(arr){
-  if (!Array.isArray(arr)) return [];
-  const pts = arr
-    .map(p => ({ t: p?.t ?? null, d: Number(p?.d) }))
-    .filter(p => Number.isFinite(p.d));
-  pts.sort((a,b) => String(a.t).localeCompare(String(b.t)));
-  return pts;
-}
-
-function drawLineChart(canvasId, points, title){
-  const canvas = document.getElementById(canvasId);
-  const { w, h } = fitCanvasToCSS(canvas);
-  const ctx = canvas.getContext("2d");
-
-  // Background ALWAYS
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle = "#020617";
-  ctx.fillRect(0,0,w,h);
-
-  if (!Array.isArray(points) || points.length === 0) {
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("No data points yet.", 16, 32);
-    return;
-  }
-
-  const ys = points.map(p => Number(p.d)).filter(Number.isFinite);
-  if (!ys.length) {
-    ctx.fillStyle = "#fbbf24";
-    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("No numeric difficulty values found.", 16, 32);
-    return;
-  }
-
-  // Chart padding
-  const padL = 60, padR = 16, padT = 16, padB = 46;
-  const cw = Math.max(10, w - padL - padR);
-  const ch = Math.max(10, h - padT - padB);
-
-  let min = Math.min(...ys);
-  let max = Math.max(...ys);
-  if (min === max) { min *= 0.9; max *= 1.1; }
-
-  const n = points.length;
-  const xAt = (i) => padL + cw * (n === 1 ? 0 : i / (n - 1));
-  const yAt = (v) => {
-    const t = (v - min) / (max - min);
-    return padT + ch * (1 - t);
-  };
-
-  // Font (needed for measureText)
-  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-
-  // Horizontal reference lines + Y labels
-  const gridY = 4;
-  ctx.strokeStyle = "rgba(255,255,255,.07)";
-  ctx.lineWidth = 1;
-  ctx.fillStyle = "#94a3b8";
-
-  for (let i=0;i<=gridY;i++){
-    const y = padT + (ch * i / gridY);
-
-    ctx.beginPath();
-    ctx.moveTo(padL, y);
-    ctx.lineTo(padL + cw, y);
-    ctx.stroke();
-
-    const v = max - (max - min) * (i / gridY);
-    ctx.fillText(nice(v), 8, y + 4);
-  }
-
-  // Vertical reference lines + X labels (dates)
-  const gridX = 4;
-  for (let i=0;i<=gridX;i++){
-    const idx = Math.round((n - 1) * (i / gridX));
-    const x = xAt(idx);
-
-    // vertical line
-    ctx.beginPath();
-    ctx.moveTo(x, padT);
-    ctx.lineTo(x, padT + ch);
-    ctx.stroke();
-
-    // tick
-    ctx.strokeStyle = "rgba(255,255,255,.12)";
-    ctx.beginPath();
-    ctx.moveTo(x, padT + ch);
-    ctx.lineTo(x, padT + ch + 6);
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(255,255,255,.07)";
-
-    // label
-    const label = fmtDate(points[idx]?.t);
-    const tw = ctx.measureText(label).width;
-    const lx = Math.min(Math.max(x - tw/2, padL), padL + cw - tw);
-    ctx.fillText(label, lx, padT + ch + 22);
-  }
-
-  // Line (robust start)
-  ctx.strokeStyle = "#38bdf8";
-  ctx.lineWidth = 2;
-  let started = false;
-
-  ctx.beginPath();
-  for (let i=0;i<n;i++){
-    const v = Number(points[i]?.d);
-    if (!Number.isFinite(v)) continue;
-    const x = xAt(i);
-    const y = yAt(v);
-    if (!started) { ctx.moveTo(x, y); started = true; }
-    else ctx.lineTo(x, y);
-  }
-  if (started) ctx.stroke();
-
-  // Title / last value
-  const last = ys[ys.length - 1];
-  ctx.fillStyle = "#e2e8f0";
-  ctx.font = "13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-  // ctx.fillText(`${title} • last: ${nice(last)} • points: ${ys.length}`, padL, h - 10);
-}
-
-async function load(){
-  //dbg(`Loading ${DATA_URL} …`);
-
-  let data;
+async function init() {
   try {
-    const res = await fetch(DATA_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error(`fetch failed: ${res.status} ${res.statusText}`);
+    const res = await fetch('./data/difficulty.json');
+    if (!res.ok) throw new Error('not found');
+    const data = await res.json();
 
-    // Safer: detect accidental HTML / 404
-    const text = await res.text();
-    try { data = JSON.parse(text); }
-    catch { throw new Error(`Not valid JSON. First 120 chars:\n${text.slice(0,120)}`); }
-  } catch (e) {
-    dbg(`ERROR loading JSON:\n${e && e.stack ? e.stack : e}`);
-    return;
+    if (data.updated) {
+      const d = new Date(data.updated);
+      document.getElementById('updated-label').textContent =
+        'LAST UPDATED: ' + d.toUTCString().toUpperCase();
+    }
+
+    const configs = [
+      { key: 'randomx', chartId: 'chart-rx', emptyId: 'empty-rx', latestId: 'rx-latest', color: '#26c6da' },
+      { key: 'progpow', chartId: 'chart-pp', emptyId: 'empty-pp', latestId: 'pp-latest', color: '#ab47bc' },
+      { key: 'sha256d', chartId: 'chart-sha', emptyId: 'empty-sha', latestId: 'sha-latest', color: '#ef5350' },
+    ];
+
+    configs.forEach(({ key, chartId, emptyId, latestId, color }) => {
+      const arr = data[key];
+      if (!arr || arr.length === 0) {
+        document.getElementById(emptyId).style.display = 'flex';
+        document.getElementById(chartId).style.display = 'none';
+      } else {
+        makeChart(chartId, arr, color);
+        const last = arr[arr.length - 1].d;
+        document.getElementById(latestId).innerHTML = `CURRENT: <strong>${fmtD(last)}</strong>`;
+      }
+    });
+
+  } catch(e) {
+    document.getElementById('updated-label').textContent = 'difficulty.json NOT FOUND — add data to ./data/difficulty.json';
+    ['rx','pp','sha'].forEach(a => {
+      document.getElementById('empty-' + a).style.display = 'flex';
+      document.getElementById('chart-' + a).style.display = 'none';
+    });
   }
-
-  const rxPts  = toPoints(data.randomx);
-  const ppPts  = toPoints(data.progpow);
-  const shaPts = toPoints(data.sha256d);
-
-  drawLineChart("rx",  rxPts,  "RandomX");
-  drawLineChart("pp",  ppPts,  "ProgPoW");
-  drawLineChart("sha", shaPts, "SHA256d");
-
-  /* document.getElementById("rxNote").textContent  =
-    `points: ${rxPts.length}${rxPts.length ? " • last: " + nice(rxPts[rxPts.length-1].d) : ""}`;
-  document.getElementById("ppNote").textContent  =
-    `points: ${ppPts.length}${ppPts.length ? " • last: " + nice(ppPts[ppPts.length-1].d) : ""}`;
-  document.getElementById("shaNote").textContent =
-    `points: ${shaPts.length}${shaPts.length ? " • last: " + nice(shaPts[shaPts.length-1].d) : ""}`;
-
-  dbg(
-    `OK\n` +
-    `updated: ${data.updated ?? "(none)"}\n` +
-    `source:  ${data.source ?? "(none)"}\n` +
-    `keys:    ${Object.keys(data).join(", ")}\n\n` +
-    `randomx:  ${rxPts.length} points\n` +
-    `progpow:  ${ppPts.length} points\n` +
-    `sha256d:  ${shaPts.length} points\n`
-  );*/
 }
 
-document.getElementById("refresh").addEventListener("click", load);
-
-// Redraw once on resize (no loops), debounced
-let resizeTimer = null;
-window.addEventListener("resize", () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(load, 200);
-});
-
-load();
+init();
 </script>
 </body>
 </html>
