@@ -1052,6 +1052,7 @@
             <label class="form-label" for="os-select">OS</label>
             <select id="os-select" onchange="buildCommand()">
               <option value="linux">Linux</option>
+              <option value="macos">macOS</option>
               <option value="windows">Windows</option>
             </select>
           </div>
@@ -1447,10 +1448,15 @@ const POOLS = {
 const MINERS = {
   rx: {
     linux:   [{ label: 'xmrig-veil', bin: './xmrig' }],
+    macos:   [{ label: 'xmrig-veil', bin: './xmrig' }],
     windows: [{ label: 'xmrig-veil', bin: 'xmrig.exe' }],
   },
   pp: {
     linux:   [
+      { label: 'T-Rex (NVIDIA)',       bin: './t-rex',    flag: '-a progpow-veil' },
+      { label: 'WildRig 0.40.6 (AMD)', bin: './wildrig',  flag: '-a progpow-veil' },
+    ],
+    macos:   [
       { label: 'T-Rex (NVIDIA)',       bin: './t-rex',    flag: '-a progpow-veil' },
       { label: 'WildRig 0.40.6 (AMD)', bin: './wildrig',  flag: '-a progpow-veil' },
     ],
@@ -1461,6 +1467,7 @@ const MINERS = {
   },
   sha: {
     linux:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d' }],
+    macos:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d' }],
     windows: [{ label: 'cpuminer-opt-veil', bin: 'cpuminer.exe', flag: '-a sha256d' }],
   },
 };
