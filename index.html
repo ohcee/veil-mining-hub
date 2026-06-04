@@ -1093,7 +1093,8 @@
 
         <div class="solo-callout" id="solo-note" style="display:none">
           <strong>SOLO MINING:</strong> Requires a running Veil node + stratum proxy on your machine.
-          See <a href="https://github.com/ohcee/veil-node-stratum-proxy" target="_blank" rel="noopener">veil-node-stratum-proxy</a> for setup.
+          <a href="https://github.com/ohcee/veil-node-stratum-proxy/releases/tag/v0.1.1" target="_blank" rel="noopener">veil-node-stratum-proxy v0.1.1</a> is the latest release (Dec 28 2025) — source only, no prebuilt binary yet.
+          <br><span style="color:var(--text3)">⚠ Currently being tested — wallet setup in progress. Use at your own risk.</span>
         </div>
 
       </div>
@@ -1195,11 +1196,11 @@
             <span class="sw-algo-name" style="color:var(--gold)">SOLO — Stratum Proxy</span>
           </div>
           <div class="sw-links">
-            <a class="sw-link" href="https://github.com/ohcee/veil-node-stratum-proxy/tree/Fix-keepalived-error" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> veil-node-stratum-proxy
+            <a class="sw-link" href="https://github.com/ohcee/veil-node-stratum-proxy/releases/tag/v0.1.1" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> veil-node-stratum-proxy v0.1.1
             </a>
           </div>
-          <div class="sw-note">Bridges your Veil node to T-Rex / XMRig for solo mining without a pool.</div>
+          <div class="sw-note">Source only · Dec 28 2025 · No prebuilt binary yet.<br>⚠ Testing in progress — wallet setup underway.</div>
         </div>
       </div>
     </div>
@@ -1222,12 +1223,60 @@
       </div>
 
       <div class="build-pane active" id="pane-xmrig">
-<pre><span class="cmd-comment"># Clone and build XMRig-Veil (CPU / RandomX)</span>
+        <div class="build-tabs" style="border:none;border-bottom:1px solid var(--border);margin:-1.25rem -1.25rem 1.25rem">
+          <div class="build-tab active" onclick="showOsTab('linux', this)" style="font-size:0.6rem">UBUNTU/LINUX</div>
+          <div class="build-tab" onclick="showOsTab('macos', this)" style="font-size:0.6rem">MACOS</div>
+          <div class="build-tab" onclick="showOsTab('windows', this)" style="font-size:0.6rem">WINDOWS</div>
+        </div>
+
+        <div id="os-linux">
+<pre><span class="cmd-comment"># Dependencies</span>
+sudo apt install -y git build-essential \
+  cmake libuv1-dev libssl-dev libhwloc-dev
+
+<span class="cmd-comment"># Clone xmrig-veil (not upstream xmrig)</span>
 git clone https://github.com/ohcee/xmrig-veil.git
 mkdir xmrig-veil/build && cd xmrig-veil/build
 cmake ..
 make -j$(nproc)</pre>
-        <div class="build-pane-note">Requires cmake, gcc/clang, libuv, libssl. On Debian/Ubuntu: <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">apt install build-essential cmake libuv1-dev libssl-dev</code></div>
+        </div>
+
+        <div id="os-macos" style="display:none">
+<pre><span class="cmd-comment"># Dependencies (Homebrew required)</span>
+brew install cmake libuv openssl hwloc
+
+<span class="cmd-comment"># Clone xmrig-veil (not upstream xmrig)</span>
+git clone https://github.com/ohcee/xmrig-veil.git
+mkdir xmrig-veil/build && cd xmrig-veil/build
+cmake .. -DOPENSSL_ROOT_DIR=$(brew --prefix openssl)
+make -j$(sysctl -n hw.logicalcpu)</pre>
+          <div class="build-pane-note" style="margin-top:0.75rem">Apple Silicon (M1/M2): RandomX JIT runs in slow secure mode — reduced hashrate. CPU affinity and huge pages not supported on ARM macOS.</div>
+        </div>
+
+        <div id="os-windows" style="display:none">
+<pre><span class="cmd-comment"># Option A: MSYS2 (ucrt64 shell)</span>
+pacman -S mingw-w64-ucrt-x86_64-gcc git make
+
+<span class="cmd-comment"># Download xmrig-deps ZIP → extract to C:\xmrig-deps
+# github.com/xmrig/xmrig-deps</span>
+
+git clone https://github.com/ohcee/xmrig-veil.git
+mkdir xmrig-veil\build && cd xmrig-veil\build
+"c:\Program Files\CMake\bin\cmake.exe" .. ^
+  -G "Unix Makefiles" ^
+  -DXMRIG_DEPS=c:/xmrig-deps/gcc/x64
+make -j$(nproc)
+
+<span class="cmd-comment"># Option B: Visual Studio 2022</span>
+git clone https://github.com/ohcee/xmrig-veil.git
+mkdir xmrig-veil\build && cd xmrig-veil\build
+cmake .. -G "Visual Studio 17 2022" -A x64 ^
+  -DXMRIG_DEPS=c:\xmrig-deps\msvc2022\x64
+cmake --build . --config Release</pre>
+          <div class="build-pane-note" style="margin-top:0.75rem">Requires CMake + prebuilt deps from <a href="https://github.com/xmrig/xmrig-deps" target="_blank" rel="noopener" style="color:var(--veil)">xmrig/xmrig-deps</a>. For VS 2022 install "Desktop development with C++" and "C++/CLI support for v143 build tools".</div>
+        </div>
+
+        <div class="build-pane-note" style="margin-top:0.75rem">Always clone <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener" style="color:var(--veil)">ohcee/xmrig-veil</a> — standard XMRig does not support the VEIL RandomX variant.</div>
       </div>
 
       <div class="build-pane" id="pane-cpu">
@@ -1259,17 +1308,37 @@ make -j$(nproc)</pre>
       </div>
 
       <div class="build-pane" id="pane-proxy">
-<pre><span class="cmd-comment"># veil-node-stratum-proxy (solo mining bridge)</span>
-git clone -b Fix-keepalived-error \
-  https://github.com/ohcee/veil-node-stratum-proxy
-cd veil-node-stratum-proxy
-npm install
+<pre><span class="cmd-comment"># 1. veil.conf (wallet v1.4.0.0+ required)</span>
+rpcuser=veil
+rpcpassword=veil
+rpcbind=127.0.0.1
+rpcallowip=127.0.0.1
+rpcport=5556
+server=1
+listen=1
+miningaddress=&lt;basecoin address&gt;
 
-<span class="cmd-comment"># Configure your node RPC in config.json, then:</span>
-node proxy.js
+<span class="cmd-comment"># Get a basecoin address:
+# Settings > Advanced Options > Console > getnewbasecoinaddress</span>
 
-<span class="cmd-comment"># Then point your miner at localhost:3333</span></pre>
-        <div class="build-pane-note">Your Veil node must be running with RPC enabled. See repo README for config details.</div>
+<span class="cmd-comment"># 2. Install proxy dependencies (Python 3 required)</span>
+pip install -r requirements.txt
+
+<span class="cmd-comment"># 3. Start the proxy</span>
+python3 veilproxy.py -p 5555 \
+  -n http://veil:veil@127.0.0.1:5556 -j
+
+<span class="cmd-comment"># 4a. T-Rex ProgPoW (v0.26.6+) — Linux</span>
+./t-rex --validate-shares -a progpow-veil \
+  --coin veil -o stratum+tcp://127.0.0.1:5555 -u x -p x
+
+<span class="cmd-comment"># 4b. WildRig ProgPoW (v0.32.1+) — Linux</span>
+./wildrig --print-full -a progpow-veil \
+  -o 127.0.0.1:5555 -u x -p x
+
+<span class="cmd-comment"># 4c. XMRig RandomX — Linux</span>
+./xmrig -o 127.0.0.1:5555 -u x -p x</pre>
+        <div class="build-pane-note">Username and password for the proxy can be anything — <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">-u x -p x</code> is fine. For Windows replace <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">./</code> with the <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">.exe</code> binary name. XMRig must be built from <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener" style="color:var(--veil)">xmrig-veil</a> — standard XMRig does not support VEIL.</div>
       </div>
     </div>
   </div>
@@ -1471,6 +1540,16 @@ function copyCommand() {
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = '⧉ COPY'; btn.classList.remove('copied'); }, 1800);
   });
+}
+
+// ── OS TABS (inside xmrig pane) ───────────────────────────────────────────
+function showOsTab(os, el) {
+  ['linux','macos','windows'].forEach(o => {
+    const el2 = document.getElementById('os-' + o);
+    if (el2) el2.style.display = o === os ? 'block' : 'none';
+  });
+  el.parentElement.querySelectorAll('.build-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
 
 // ── BUILD TABS ────────────────────────────────────────────────────────────
