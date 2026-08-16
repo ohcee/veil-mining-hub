@@ -2,7 +2,7 @@
 
 A web hub to make Veil mining as **copy/paste** as possible.
 
-Live: <https://ohcee.github.io/veil-mining-hub/>
+Live: <https://mining.veil-info.org>
 
 Includes:
 
