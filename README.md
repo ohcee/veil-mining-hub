@@ -87,21 +87,21 @@ FastPool username formats supported by the UI:
 
 ### ProgPoW — GPU
 
-- **Veil-Miner v1.1.3** (first choice): <https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3>
+- **Veil-Miner v1.1.3**: <https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3>
   Prebuilt for Windows, Linux, HiveOS, and macOS (Apple Silicon CPU mining).
   NVIDIA GTX 900 series through RTX 5090 in one binary, AMD/Intel via OpenCL.
   Ships a HiveOS custom miner package (miner name `veilminer`, algo `progpow-veil`).
-- **T-Rex** (NVIDIA, backup): <https://github.com/trexminer/t-rex/releases>
-- **WildRig Multi 0.40.6** (AMD, backup): <https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6>
+- **T-Rex** (NVIDIA): <https://github.com/trexminer/t-rex/releases>
+- **WildRig Multi 0.40.6** (AMD): <https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6>
   Use 0.40.6 specifically — later versions may not work with ProgPoW-Veil.
 
 ### RandomX — CPU
 
-- **Veil-Miner-CPU rc1** (first choice, testing): <https://github.com/ohcee/Veil-Miner-CPU/releases/tag/v6.25.0-veil-rc1>
+- **Veil-Miner-CPU rc1** (testing): <https://github.com/ohcee/Veil-Miner-CPU/releases/tag/v6.25.0-veil-rc1>
   Prebuilt binaries for Windows, Linux, and macOS (x64 + arm64). XMRig stripped down to
   mine Veil only — rx/veil, no dev fee. macOS arm64 confirmed mining live; Windows and
   Linux testers wanted.
-- **xmrig-veil** (backup): <https://github.com/ohcee/xmrig-veil>
+- **xmrig-veil**: <https://github.com/ohcee/xmrig-veil>
   Source build. Standard XMRig does **not** support the VEIL RandomX variant.
 
 ### SHA256D — CPU

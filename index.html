@@ -314,7 +314,6 @@
 
   .badge-new     { color: #fff; background: var(--green); }
   .badge-testing { color: #fff; background: var(--amber); }
-  .badge-backup  { color: var(--text3); background: var(--bg); border: 1px solid var(--border2); }
   .badge-prebuilt{ color: var(--veil); background: var(--glow2); border: 1px solid var(--veil); }
 
   /* ── MAIN LAYOUT ── */
@@ -1259,13 +1258,13 @@
               <span class="sw-link-arrow">→</span> Veil-Miner v1.1.3 <span class="badge badge-new">NEW</span>
             </a>
             <a class="sw-link" href="https://github.com/trexminer/t-rex/releases" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> T-Rex (NVIDIA) <span class="badge badge-backup">BACKUP</span>
+              <span class="sw-link-arrow">→</span> T-Rex (NVIDIA)
             </a>
             <a class="sw-link" href="https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> WildRig Multi 0.40.6 (AMD) <span class="badge badge-backup">BACKUP</span>
+              <span class="sw-link-arrow">→</span> WildRig Multi 0.40.6 (AMD)
             </a>
           </div>
-          <div class="sw-note">Veil-Miner: prebuilt for Windows, Linux, HiveOS + macOS (Apple Silicon CPU). NVIDIA GTX 900 → RTX 5090, AMD/Intel via OpenCL. Backup AMD: WildRig 0.40.6 specifically.</div>
+          <div class="sw-note">Veil-Miner: prebuilt for Windows, Linux, HiveOS + macOS (Apple Silicon CPU). NVIDIA GTX 900 → RTX 5090, AMD/Intel via OpenCL. WildRig: use 0.40.6 specifically.</div>
         </div>
         <div class="sw-section">
           <div class="sw-algo-label">
@@ -1277,10 +1276,10 @@
               <span class="sw-link-arrow">→</span> Veil-Miner-CPU rc1 <span class="badge badge-testing">TESTING</span>
             </a>
             <a class="sw-link" href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> xmrig-veil <span class="badge badge-backup">BACKUP</span>
+              <span class="sw-link-arrow">→</span> xmrig-veil
             </a>
           </div>
-          <div class="sw-note">Veil-Miner-CPU: prebuilt binaries for Windows, Linux, macOS. rx/veil only, no dev fee. macOS arm64 confirmed live, Windows/Linux testers wanted. Backup: build xmrig-veil from source.</div>
+          <div class="sw-note">Veil-Miner-CPU: prebuilt binaries for Windows, Linux, macOS. rx/veil only, no dev fee. macOS arm64 confirmed live, Windows/Linux testers wanted. xmrig-veil: source build.</div>
         </div>
         <div class="sw-section">
           <div class="sw-algo-label">
@@ -1323,7 +1322,7 @@
         <div class="build-tab active" onclick="showBuildTab('veilminer', this)">VEIL-MINER · GPU</div>
         <div class="build-tab" onclick="showBuildTab('xmrig', this)">VEIL-MINER-CPU</div>
         <div class="build-tab" onclick="showBuildTab('cpu', this)">CPUMINER</div>
-        <div class="build-tab" onclick="showBuildTab('gpu', this)">GPU BACKUPS</div>
+        <div class="build-tab" onclick="showBuildTab('gpu', this)">T-REX · WILDRIG</div>
         <div class="build-tab" onclick="showBuildTab('proxy', this)">SOLO PROXY</div>
       </div>
 
@@ -1369,7 +1368,7 @@
           On macOS run <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">xattr -d com.apple.quarantine xmrig</code> if Gatekeeper complains.
         </div>
         <div class="build-pane-note">
-          Backup: build <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">ohcee/xmrig-veil</a> from source (same tree, cmake build — instructions in the repo README). Standard XMRig does <strong>not</strong> support the Veil RandomX variant.
+          Also available: <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">ohcee/xmrig-veil</a>, built from source (same tree, cmake build, instructions in the repo README). Standard XMRig does <strong>not</strong> support the Veil RandomX variant.
         </div>
       </div>
 
@@ -1385,7 +1384,7 @@ make -j$(nproc)</pre>
       </div>
 
       <div class="build-pane" id="pane-gpu">
-<pre><span class="cmd-comment"># T-Rex — NVIDIA backup (ProgPoW-Veil)</span>
+<pre><span class="cmd-comment"># T-Rex — NVIDIA (ProgPoW-Veil)</span>
 <span class="cmd-comment"># Download latest release from GitHub, then:</span>
 ./t-rex -a progpow-veil \
   -o stratum+tcp://veil.yadaminers.pl:3334 \
@@ -1393,12 +1392,12 @@ make -j$(nproc)</pre>
   -p x \
   -w rig1
 
-<span class="cmd-comment"># WildRig Multi 0.40.6 — AMD backup (ProgPoW-Veil)</span>
+<span class="cmd-comment"># WildRig Multi 0.40.6 — AMD (ProgPoW-Veil)</span>
 ./wildrig -a progpow-veil \
   -o stratum+tcp://veil.yadaminers.pl:3334 \
   -u YOUR_ADDRESS \
   -p x</pre>
-        <div class="build-pane-note">These are the previous recommendations, kept as backups — <a href="https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3" target="_blank" rel="noopener">Veil-Miner</a> is now the first choice. AMD: use WildRig 0.40.6 specifically — later versions may not work with ProgPoW-Veil.</div>
+        <div class="build-pane-note">AMD: use WildRig 0.40.6 specifically, later versions may not work with ProgPoW-Veil.</div>
       </div>
 
       <div class="build-pane" id="pane-proxy">
@@ -1457,6 +1456,20 @@ python3 veilproxy.py -p 5555 \
           <span class="ext-link-body">
             <span class="ext-link-name">Veil Info</span>
             <span class="ext-link-desc">Live block, price & difficulty</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://street.veil-info.org" target="_blank" rel="noopener">
+          <span class="ext-link-icon">🚦</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">VeilStreet</span>
+            <span class="ext-link-desc">Live transaction visualizer</span>
+          </span>
+        </a>
+        <a class="ext-link" href="https://ohcee.github.io/Academy-Veil/" target="_blank" rel="noopener">
+          <span class="ext-link-icon">🎓</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Veil Academy</span>
+            <span class="ext-link-desc">Learn how Veil works</span>
           </span>
         </a>
         <a class="ext-link" href="https://explorer.veil-project.com" target="_blank" rel="noopener">
@@ -1563,23 +1576,23 @@ const MINERS = {
   rx: {
     linux:   [
       { label: 'Veil-Miner-CPU (prebuilt · testing)', bin: './xmrig', workerStyle: 'rig-id' },
-      { label: 'xmrig-veil (backup · source build)',  bin: './xmrig', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (source build)',  bin: './xmrig', workerStyle: 'rig-id' },
     ],
     macos:   [
       { label: 'Veil-Miner-CPU (prebuilt)',           bin: './xmrig', workerStyle: 'rig-id' },
-      { label: 'xmrig-veil (backup · source build)',  bin: './xmrig', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (source build)',  bin: './xmrig', workerStyle: 'rig-id' },
     ],
     windows: [
       { label: 'Veil-Miner-CPU (prebuilt · testing)', bin: 'xmrig.exe', workerStyle: 'rig-id' },
-      { label: 'xmrig-veil (backup · source build)',  bin: 'xmrig.exe', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (source build)',  bin: 'xmrig.exe', workerStyle: 'rig-id' },
     ],
   },
   pp: {
     linux:   [
       { label: 'Veil-Miner (NVIDIA · CUDA)',       bin: './veilminer', flag: '--cuda',   purl: true, workerStyle: 'dot' },
       { label: 'Veil-Miner (AMD/Intel · OpenCL)',  bin: './veilminer', flag: '--opencl', purl: true, workerStyle: 'dot' },
-      { label: 'T-Rex (NVIDIA · backup)',          bin: './t-rex',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
-      { label: 'WildRig 0.40.6 (AMD · backup)',    bin: './wildrig',  flag: '-a progpow-veil', workerStyle: 'dot' },
+      { label: 'T-Rex (NVIDIA)',          bin: './t-rex',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
+      { label: 'WildRig 0.40.6 (AMD)',    bin: './wildrig',  flag: '-a progpow-veil', workerStyle: 'dot' },
     ],
     macos:   [
       { label: 'Veil-Miner (Apple Silicon · CPU)', bin: './veilminer', flag: '--cpu', purl: true, workerStyle: 'dot' },
@@ -1587,8 +1600,8 @@ const MINERS = {
     windows: [
       { label: 'Veil-Miner (NVIDIA · CUDA)',       bin: 'veilminer.exe', flag: '--cuda',   purl: true, workerStyle: 'dot' },
       { label: 'Veil-Miner (AMD/Intel · OpenCL)',  bin: 'veilminer.exe', flag: '--opencl', purl: true, workerStyle: 'dot' },
-      { label: 'T-Rex (NVIDIA · backup)',          bin: 't-rex.exe',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
-      { label: 'WildRig 0.40.6 (AMD · backup)',    bin: 'wildrig.exe',  flag: '-a progpow-veil', workerStyle: 'dot' },
+      { label: 'T-Rex (NVIDIA)',          bin: 't-rex.exe',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
+      { label: 'WildRig 0.40.6 (AMD)',    bin: 'wildrig.exe',  flag: '-a progpow-veil', workerStyle: 'dot' },
     ],
   },
   sha: {
