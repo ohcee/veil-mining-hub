@@ -1165,14 +1165,14 @@
 
         <div class="form-row">
           <label class="form-label" for="wallet-input">WALLET ADDRESS</label>
-          <input type="text" id="wallet-input" placeholder="sv1qYourVeilAddress..." oninput="buildCommand()">
+          <input type="text" id="wallet-input" placeholder="sv1q... or bv1q... address" oninput="buildCommand()">
         </div>
 
         <!-- FastPool formats helper -->
         <div class="fastpool-formats" id="fastpool-formats">
-          <div class="fp-format-header">FASTPOOL USERNAME FORMATS</div>
+          <div class="fp-format-header">FASTPOOL · BV BASECOIN ADDRESS ONLY</div>
           <div class="fp-format-list">
-            <div class="fp-format-item"><span class="fp-code">ADDRESS</span><span class="fp-desc">Basic</span></div>
+            <div class="fp-format-item"><span class="fp-code">ADDRESS</span><span class="fp-desc">Basic (bv address, sv will not work)</span></div>
             <div class="fp-format-item"><span class="fp-code">solo:ADDRESS</span><span class="fp-desc">Solo mode</span></div>
             <div class="fp-format-item"><span class="fp-code">ADDRESS@worker</span><span class="fp-desc">Named worker</span></div>
             <div class="fp-format-item"><span class="fp-code">ADDRESS.diff@worker</span><span class="fp-desc">Difficulty lock</span></div>
@@ -1223,6 +1223,7 @@
             <li class="port-item"><span class="port-desc">ProgPoW</span><span class="port-num">:3334</span></li>
             <li class="port-item"><span class="port-desc">RandomX</span><span class="port-num">:3335</span></li>
           </ul>
+          <div class="sw-note" style="margin-top:0.5rem">sv or bv address · Password: x</div>
         </div>
 
         <div class="pool-header" style="border-top:1px solid var(--border)">
@@ -1239,7 +1240,7 @@
             <li class="port-item"><span class="port-desc">Mid-end (diff 100k)</span><span class="port-num">:10282</span></li>
             <li class="port-item"><span class="port-desc">SSL (diff 25k)</span><span class="port-num">:10285</span></li>
           </ul>
-          <div class="sw-note" style="margin-top:0.5rem">Algo: rx/veil · Password: x</div>
+          <div class="sw-note" style="margin-top:0.5rem">Algo: rx/veil · Password: x · bv basecoin address only</div>
         </div>
       </div>
     </div>
@@ -1683,6 +1684,9 @@ function buildCommand() {
   }
 
   document.getElementById('output-pre').textContent = cmd;
+  document.getElementById('wallet-input').placeholder = pool.isFastPool
+    ? 'bv1qYourBasecoinAddress... (bv only)'
+    : 'sv1q... or bv1q... address';
   document.getElementById('fastpool-formats').classList.toggle('visible', !!pool.isFastPool);
   document.getElementById('solo-note').style.display = pool.solo ? 'block' : 'none';
 }

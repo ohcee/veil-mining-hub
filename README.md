@@ -55,6 +55,8 @@ Veil uses a triple PoW model — 50% of the daily block reward is split across:
 
 Pool: <https://veil.yadaminers.pl/>
 
+- Accepts sv (stealth) and bv (basecoin) addresses · Password: `x`
+
 | Algorithm | Endpoint |
 |-----------|----------|
 | SHA256D   | `stratum+tcp://veil.yadaminers.pl:3333` |
@@ -66,6 +68,7 @@ Pool: <https://veil.yadaminers.pl/>
 Pool: <https://fastpool.xyz/veil-rx/>
 
 - Algorithm: `rx/veil` · Password: `x`
+- Basecoin (bv) address only, sv addresses will not work
 
 | Port    | Tier |
 |---------|------|
