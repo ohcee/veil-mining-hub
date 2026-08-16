@@ -7,13 +7,13 @@ Live: <https://ohcee.github.io/veil-mining-hub/>
 Includes:
 
 - **Command Builder** (pool + algo + OS → ready-to-run command)
-- **Mining Difficulty Charts** (reads `./data/difficulty.json`)
-- **Mining Software** links + build notes for all three algos
+- **Mining Difficulty Charts** (reads `./data/difficulty.json`, linked from the header and the hero stats)
+- **Mining Software** downloads + build notes for all three algos
 - **Solo Mining** support via stratum proxy
 
 Pages:
 
-- `index.html` — Mining Hub (command builder + software + build instructions)
+- `index.html` — Mining Hub (command builder + software + downloads)
 - `difficulty.html` — Difficulty charts
 - `data/difficulty.json` — Chart data (populated by GitHub Actions)
 
@@ -29,11 +29,11 @@ Supports Veil mining across all three PoW algorithms:
 - **ProgPoW** (GPU) — yadaminers
 - **SHA256D** (CPU) — yadaminers
 
-Generates a full command line with correct endpoint/ports, algo flags, OS-specific binary name (`./xmrig` vs `xmrig.exe`), and FastPool username formats.
+Generates a full command line with correct endpoint/ports, algo flags, OS-specific binary name, and FastPool username formats. Veil-Miner uses its single `-P` URL format, the rest use `-o -u -p`.
 
 ### Difficulty Charts
 
-Loads `./data/difficulty.json` and plots historical difficulty for RandomX, ProgPoW, and SHA256D with date labels and grid lines.
+Loads `./data/difficulty.json` and plots historical difficulty for RandomX, ProgPoW, and SHA256D. The front page shows current values plus 30-day sparklines that link straight to the full charts.
 
 ---
 
@@ -85,17 +85,24 @@ FastPool username formats supported by the UI:
 
 ## Mining Software
 
-### RandomX — CPU
-
-- **xmrig-veil**: <https://github.com/ohcee/xmrig-veil>
-  Source build required. Windows: build from source or use CI artifacts.
-  **Must use this fork** — standard XMRig does not support the VEIL RandomX variant.
-
 ### ProgPoW — GPU
 
-- **T-Rex** (NVIDIA): <https://github.com/trexminer/t-rex/releases>
-- **WildRig Multi 0.40.6** (AMD): <https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6>
+- **Veil-Miner v1.1.3** (first choice): <https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3>
+  Prebuilt for Windows, Linux, HiveOS, and macOS (Apple Silicon CPU mining).
+  NVIDIA GTX 900 series through RTX 5090 in one binary, AMD/Intel via OpenCL.
+  Ships a HiveOS custom miner package (miner name `veilminer`, algo `progpow-veil`).
+- **T-Rex** (NVIDIA, backup): <https://github.com/trexminer/t-rex/releases>
+- **WildRig Multi 0.40.6** (AMD, backup): <https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6>
   Use 0.40.6 specifically — later versions may not work with ProgPoW-Veil.
+
+### RandomX — CPU
+
+- **Veil-Miner-CPU rc1** (first choice, testing): <https://github.com/ohcee/Veil-Miner-CPU/releases/tag/v6.25.0-veil-rc1>
+  Prebuilt binaries for Windows, Linux, and macOS (x64 + arm64). XMRig stripped down to
+  mine Veil only — rx/veil, no dev fee. macOS arm64 confirmed mining live; Windows and
+  Linux testers wanted.
+- **xmrig-veil** (backup): <https://github.com/ohcee/xmrig-veil>
+  Source build. Standard XMRig does **not** support the VEIL RandomX variant.
 
 ### SHA256D — CPU
 

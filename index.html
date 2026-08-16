@@ -9,23 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:       #0a0c10;
-    --bg2:      #0f1218;
-    --bg3:      #141820;
-    --border:   #1e2530;
-    --border2:  #2a3240;
-    --veil:     #4fc3f7;
-    --veil2:    #0288d1;
-    --rx:       #26c6da;
-    --pp:       #ab47bc;
-    --sha:      #ef5350;
-    --gold:     #ffd54f;
-    --text:     #c8d0dc;
-    --text2:    #7a8898;
-    --text3:    #4a5560;
-    --green:    #66bb6a;
-    --glow:     rgba(79, 195, 247, 0.12);
-    --glow2:    rgba(79, 195, 247, 0.05);
+    --bg:       #eef1f5;
+    --card:     #ffffff;
+    --bg3:      #f6f8fa;
+    --code-bg:  #101720;
+    --code-tx:  #9fb3c8;
+    --border:   #d7dee8;
+    --border2:  #b9c4d2;
+    --veil:     #0277bd;
+    --veil2:    #01579b;
+    --rx:       #00838f;
+    --pp:       #7b1fa2;
+    --sha:      #c62828;
+    --gold:     #9a6c00;
+    --text:     #1a2330;
+    --text2:    #46556a;
+    --text3:    #64748b;
+    --green:    #2e7d32;
+    --amber:    #b45309;
+    --glow:     rgba(2, 119, 189, 0.10);
+    --glow2:    rgba(2, 119, 189, 0.05);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,39 +45,12 @@
     overflow-x: hidden;
   }
 
-  /* SCAN LINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.04) 2px,
-      rgba(0,0,0,0.04) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* NOISE TEXTURE */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9998;
-  }
-
   /* ── HEADER ── */
   header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10,12,16,0.92);
+    background: rgba(255,255,255,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
@@ -101,7 +77,8 @@
     font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: 0.12em;
-    color: #fff;
+    color: var(--text);
+    white-space: nowrap;
   }
 
   .logo-title span { color: var(--veil); }
@@ -128,6 +105,14 @@
     border-color: var(--border2);
     background: var(--glow2);
   }
+
+  .header-links a.nav-diff {
+    color: var(--veil);
+    border-color: var(--veil);
+    background: var(--glow2);
+  }
+
+  .header-links a.nav-diff:hover { background: var(--glow); }
 
   /* ── HERO ── */
   .hero {
@@ -169,7 +154,7 @@
     font-weight: 900;
     line-height: 0.95;
     letter-spacing: -0.01em;
-    color: #fff;
+    color: var(--text);
     text-transform: uppercase;
   }
 
@@ -179,24 +164,35 @@
     margin-top: 1rem;
     color: var(--text2);
     font-size: 0.95rem;
-    font-weight: 400;
+    font-weight: 500;
     max-width: 460px;
     line-height: 1.6;
   }
 
-  /* LIVE STATS STRIP */
+  /* LIVE STATS STRIP → links to difficulty charts */
+  .stats-link {
+    text-decoration: none;
+    display: block;
+    min-width: 360px;
+  }
+
   .stats-strip {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 4px 4px 0 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     overflow: hidden;
-    min-width: 340px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .stats-link:hover .stats-strip {
+    border-color: var(--veil);
+    box-shadow: 0 2px 12px var(--glow);
   }
 
   .stat-cell {
-    padding: 1rem 1.25rem;
+    padding: 1rem 1.25rem 0.75rem;
     border-right: 1px solid var(--border);
     position: relative;
   }
@@ -209,6 +205,7 @@
     letter-spacing: 0.15em;
     margin-bottom: 0.35rem;
     text-transform: uppercase;
+    font-weight: 700;
   }
 
   .stat-cell:nth-child(1) .stat-algo { color: var(--rx); }
@@ -218,7 +215,7 @@
   .stat-val {
     font-family: 'Share Tech Mono', monospace;
     font-size: 1.35rem;
-    color: #fff;
+    color: var(--text);
     font-weight: 400;
   }
 
@@ -229,9 +226,33 @@
     letter-spacing: 0.05em;
   }
 
+  .stat-spark {
+    display: block;
+    width: 100%;
+    height: 26px;
+    margin-top: 0.4rem;
+  }
+
+  .stats-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--veil);
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    padding: 0.55rem;
+    border-radius: 0 0 4px 4px;
+    transition: background 0.2s;
+  }
+
+  .stats-link:hover .stats-cta { background: var(--veil2); }
+
   /* ── REWARD BAND ── */
   .reward-band {
-    background: var(--bg2);
+    background: var(--card);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     padding: 0.6rem 2rem;
@@ -269,14 +290,32 @@
     font-family: 'Share Tech Mono', monospace;
     letter-spacing: 0.1em;
     white-space: nowrap;
+    font-weight: 700;
   }
 
-  .pill-rx  { background: rgba(38,198,218,0.12); color: var(--rx);  border: 1px solid rgba(38,198,218,0.25); }
-  .pill-pp  { background: rgba(171,71,188,0.12);  color: var(--pp);  border: 1px solid rgba(171,71,188,0.25); }
-  .pill-sha { background: rgba(239,83,80,0.12);   color: var(--sha); border: 1px solid rgba(239,83,80,0.25); }
+  .pill-rx  { background: rgba(0,131,143,0.08);  color: var(--rx);  border: 1px solid rgba(0,131,143,0.3); }
+  .pill-pp  { background: rgba(123,31,162,0.08); color: var(--pp);  border: 1px solid rgba(123,31,162,0.3); }
+  .pill-sha { background: rgba(198,40,40,0.08);  color: var(--sha); border: 1px solid rgba(198,40,40,0.3); }
 
   .reward-divider { color: var(--text3); flex-shrink: 0; }
   .reward-note { color: var(--text2); }
+
+  /* ── BADGES ── */
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    padding: 0.12rem 0.45rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .badge-new     { color: #fff; background: var(--green); }
+  .badge-testing { color: #fff; background: var(--amber); }
+  .badge-backup  { color: var(--text3); background: var(--bg); border: 1px solid var(--border2); }
+  .badge-prebuilt{ color: var(--veil); background: var(--glow2); border: 1px solid var(--veil); }
 
   /* ── MAIN LAYOUT ── */
   main {
@@ -299,6 +338,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-weight: 700;
   }
 
   .section-label::after {
@@ -310,7 +350,7 @@
 
   /* ── COMMAND BUILDER ── */
   .builder-card {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
@@ -330,7 +370,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--text);
   }
 
   .card-badge {
@@ -338,10 +378,11 @@
     font-size: 0.6rem;
     letter-spacing: 0.15em;
     color: var(--veil);
-    background: rgba(79,195,247,0.08);
-    border: 1px solid rgba(79,195,247,0.2);
+    background: var(--glow2);
+    border: 1px solid var(--veil);
     padding: 0.15rem 0.5rem;
     border-radius: 2px;
+    font-weight: 700;
   }
 
   .card-body { padding: 1.5rem; }
@@ -357,7 +398,7 @@
     flex: 1;
     padding: 0.65rem 0.5rem;
     border: 1px solid var(--border);
-    background: var(--bg);
+    background: var(--bg3);
     border-radius: 3px;
     cursor: pointer;
     transition: all 0.2s;
@@ -366,9 +407,9 @@
 
   .algo-tab:hover { border-color: var(--border2); }
 
-  .algo-tab.active-rx   { border-color: var(--rx);  background: rgba(38,198,218,0.08); }
-  .algo-tab.active-pp   { border-color: var(--pp);  background: rgba(171,71,188,0.08); }
-  .algo-tab.active-sha  { border-color: var(--sha); background: rgba(239,83,80,0.08); }
+  .algo-tab.active-rx   { border-color: var(--rx);  background: rgba(0,131,143,0.07); }
+  .algo-tab.active-pp   { border-color: var(--pp);  background: rgba(123,31,162,0.07); }
+  .algo-tab.active-sha  { border-color: var(--sha); background: rgba(198,40,40,0.07); }
 
   .algo-tab-name {
     font-family: 'Barlow Condensed', sans-serif;
@@ -405,6 +446,7 @@
     color: var(--text2);
     margin-bottom: 0.4rem;
     text-transform: uppercase;
+    font-weight: 700;
   }
 
   .form-grid-2 {
@@ -416,12 +458,13 @@
 
   select, input[type="text"] {
     width: 100%;
-    background: var(--bg);
+    background: var(--bg3);
     border: 1px solid var(--border2);
     color: var(--text);
     padding: 0.55rem 0.75rem;
     font-family: 'Rajdhani', sans-serif;
     font-size: 0.9rem;
+    font-weight: 500;
     border-radius: 3px;
     outline: none;
     transition: border-color 0.2s;
@@ -430,7 +473,7 @@
   }
 
   select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5560'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2346556a'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     padding-right: 2rem;
@@ -438,8 +481,8 @@
   }
 
   select:focus, input[type="text"]:focus {
-    border-color: var(--veil2);
-    box-shadow: 0 0 0 2px rgba(79,195,247,0.08);
+    border-color: var(--veil);
+    box-shadow: 0 0 0 2px var(--glow);
   }
 
   /* OUTPUT */
@@ -455,13 +498,13 @@
   }
 
   .output-pre {
-    background: var(--bg);
-    border: 1px solid var(--border);
+    background: var(--code-bg);
+    border: 1px solid var(--border2);
     border-radius: 3px;
     padding: 1rem 1.25rem;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.78rem;
-    color: var(--veil);
+    color: #6fd3ff;
     line-height: 1.7;
     overflow-x: auto;
     white-space: pre-wrap;
@@ -474,32 +517,32 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.65rem;
     letter-spacing: 0.12em;
-    color: var(--veil);
-    background: rgba(79,195,247,0.08);
-    border: 1px solid rgba(79,195,247,0.25);
+    color: #fff;
+    background: var(--veil);
+    border: 1px solid var(--veil);
     padding: 0.3rem 0.75rem;
     border-radius: 2px;
     cursor: pointer;
     transition: all 0.2s;
     text-transform: uppercase;
+    font-weight: 700;
   }
 
   .copy-btn:hover {
-    background: rgba(79,195,247,0.18);
-    border-color: var(--veil);
+    background: var(--veil2);
+    border-color: var(--veil2);
   }
 
   .copy-btn.copied {
-    color: var(--green);
+    background: var(--green);
     border-color: var(--green);
-    background: rgba(102,187,106,0.1);
   }
 
   /* FastPool username helper */
   .fastpool-formats {
     display: none;
     margin-top: 0.75rem;
-    background: var(--bg);
+    background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 3px;
     overflow: hidden;
@@ -513,9 +556,10 @@
     letter-spacing: 0.15em;
     color: var(--rx);
     padding: 0.4rem 0.75rem;
-    background: rgba(38,198,218,0.06);
+    background: rgba(0,131,143,0.06);
     border-bottom: 1px solid var(--border);
     text-transform: uppercase;
+    font-weight: 700;
   }
 
   .fp-format-list {
@@ -550,7 +594,7 @@
 
   /* ── POOL CARDS ── */
   .pool-card {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
@@ -586,7 +630,7 @@
     font-size: 1rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--text);
   }
 
   .pool-url {
@@ -598,7 +642,7 @@
     transition: color 0.2s;
   }
 
-  .pool-url:hover { color: #fff; }
+  .pool-url:hover { color: var(--veil2); text-decoration: underline; }
 
   .pool-body { padding: 1rem 1.25rem; }
 
@@ -631,19 +675,20 @@
     font-family: 'Share Tech Mono', monospace;
     color: var(--gold);
     font-size: 0.75rem;
+    font-weight: 700;
   }
 
-  .port-desc { color: var(--text2); }
+  .port-desc { color: var(--text2); font-weight: 500; }
 
   /* ── SOFTWARE CARD ── */
   .software-card {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
   }
 
-  .sw-section { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .sw-section { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); }
   .sw-section:last-child { border-bottom: none; }
 
   .sw-algo-label {
@@ -671,7 +716,7 @@
   .sw-links {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   .sw-link {
@@ -679,14 +724,16 @@
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: var(--text2);
-    font-size: 0.82rem;
-    font-weight: 500;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 600;
     padding: 0.2rem 0;
     transition: color 0.2s;
   }
 
   .sw-link:hover { color: var(--veil); }
+
+  .sw-link .badge { margin-left: auto; }
 
   .sw-link-arrow {
     font-family: 'Share Tech Mono', monospace;
@@ -715,7 +762,7 @@
 
   /* BUILD INSTRUCTIONS */
   .build-card {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
@@ -724,19 +771,21 @@
   .build-tabs {
     display: flex;
     border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
   }
 
   .build-tab {
-    padding: 0.65rem 1.25rem;
+    padding: 0.65rem 1rem;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.65rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
     border-bottom: 2px solid transparent;
     color: var(--text3);
     transition: all 0.2s;
     white-space: nowrap;
+    font-weight: 700;
   }
 
   .build-tab:hover { color: var(--text2); }
@@ -750,31 +799,65 @@
   .build-pane.active { display: block; }
 
   .build-pane pre {
-    background: var(--bg);
-    border: 1px solid var(--border);
+    background: var(--code-bg);
+    border: 1px solid var(--border2);
     border-radius: 3px;
     padding: 1rem;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.72rem;
-    color: var(--text2);
+    color: var(--code-tx);
     line-height: 1.8;
     overflow-x: auto;
     white-space: pre;
   }
 
-  .build-pane pre .cmd-comment { color: var(--text3); }
-  .build-pane pre .cmd-flag    { color: var(--veil2); }
+  .build-pane pre .cmd-comment { color: #5c6b7f; }
+  .build-pane pre .cmd-flag    { color: #6fd3ff; }
 
   .build-pane-note {
     margin-top: 0.75rem;
-    font-size: 0.8rem;
-    color: var(--text3);
+    font-size: 0.82rem;
+    color: var(--text2);
     line-height: 1.6;
+  }
+
+  .build-pane-note a { color: var(--veil); }
+
+  .dl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .dl-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--bg3);
+    transition: all 0.2s;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .dl-link:hover { border-color: var(--veil); color: var(--veil); }
+
+  .dl-link .dl-os {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    margin-left: auto;
+    letter-spacing: 0.08em;
   }
 
   /* LINKS CARD */
   .links-card {
-    background: var(--bg2);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
@@ -796,13 +879,14 @@
     border: 1px solid var(--border);
     border-radius: 3px;
     transition: all 0.2s;
-    background: var(--bg);
+    background: var(--bg3);
   }
 
   .ext-link:hover {
-    border-color: var(--border2);
-    background: var(--bg3);
+    border-color: var(--veil);
+    background: var(--card);
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px var(--glow);
   }
 
   .ext-link-icon {
@@ -815,9 +899,9 @@
   .ext-link-name {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.06em;
-    color: #fff;
+    color: var(--text);
     display: block;
     text-transform: uppercase;
   }
@@ -833,6 +917,7 @@
     border-top: 1px solid var(--border);
     padding: 1.5rem 2rem;
     text-align: center;
+    background: var(--card);
   }
 
   .footer-inner {
@@ -860,7 +945,7 @@
   .footer-links a {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.65rem;
-    color: var(--text3);
+    color: var(--text2);
     text-decoration: none;
     letter-spacing: 0.1em;
     transition: color 0.2s;
@@ -871,8 +956,8 @@
   /* ── SOLO MINING CALLOUT ── */
   .solo-callout {
     margin-top: 1.25rem;
-    background: rgba(79,195,247,0.04);
-    border: 1px solid rgba(79,195,247,0.15);
+    background: var(--glow2);
+    border: 1px solid rgba(2,119,189,0.25);
     border-left: 3px solid var(--veil);
     border-radius: 0 3px 3px 0;
     padding: 0.75rem 1rem;
@@ -898,12 +983,13 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.62rem;
     color: var(--green);
-    background: rgba(102,187,106,0.08);
-    border: 1px solid rgba(102,187,106,0.2);
+    background: rgba(46,125,50,0.08);
+    border: 1px solid rgba(46,125,50,0.3);
     padding: 0.2rem 0.5rem;
     border-radius: 2px;
     letter-spacing: 0.1em;
     margin-left: auto;
+    font-weight: 700;
   }
 
   /* ── ANIMATION ── */
@@ -926,14 +1012,18 @@
     main { grid-template-columns: 1fr; }
     .right-col { display: grid; grid-template-columns: 1fr 1fr; }
     .bottom-section { grid-template-columns: 1fr; }
+    .header-inner { flex-wrap: wrap; height: auto; min-height: 56px; padding: 0.4rem 0; gap: 0.25rem; }
+    .header-links { flex-wrap: wrap; }
   }
 
   @media (max-width: 700px) {
     .hero-grid { grid-template-columns: 1fr; }
-    .stats-strip { grid-template-columns: repeat(3, 1fr); min-width: unset; }
+    .stats-link { min-width: unset; }
+    .stats-strip { grid-template-columns: repeat(3, 1fr); }
     .right-col { grid-template-columns: 1fr; }
     .form-grid-2 { grid-template-columns: 1fr; }
     .links-grid { grid-template-columns: 1fr; }
+    .dl-grid { grid-template-columns: 1fr; }
     .header-links { display: none; }
     .reward-inner { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     .footer-inner { flex-direction: column; text-align: center; }
@@ -952,7 +1042,8 @@
       <a href="#builder">BUILDER</a>
       <a href="#pools">POOLS</a>
       <a href="#software">SOFTWARE</a>
-      <a href="#build">BUILD</a>
+      <a href="#downloads">DOWNLOADS</a>
+      <a href="difficulty.html" class="nav-diff">📈 DIFFICULTY</a>
       <a href="https://explorer.veil-project.com" target="_blank" rel="noopener">EXPLORER ↗</a>
       <a href="https://discord.veil-project.com" target="_blank" rel="noopener">DISCORD ↗</a>
     </nav>
@@ -965,26 +1056,32 @@
     <div class="fade-up fade-up-1">
       <div class="hero-eyebrow">PRIVACY COIN · PROOF-OF-WORK · MULTI-ALGO</div>
       <h1 class="hero-title">Mine<br><span class="accent">Veil.</span></h1>
-      <p class="hero-sub">Copy-paste ready mining commands for RandomX, ProgPoW, and SHA256D. Supports FastPool, yadaminers, and solo setups.</p>
+      <p class="hero-sub">Copy-paste ready mining commands for RandomX, ProgPoW, and SHA256D. Prebuilt Veil miners for Windows, Linux, HiveOS, and macOS. Supports FastPool, yadaminers, and solo setups.</p>
     </div>
     <div class="fade-up fade-up-2">
-      <div class="stats-strip" id="stats-strip">
-        <div class="stat-cell">
-          <div class="stat-algo">RANDOMX</div>
-          <div class="stat-val" id="stat-rx">—</div>
-          <div class="stat-label">DIFFICULTY</div>
+      <a class="stats-link" href="difficulty.html" title="View full difficulty charts">
+        <div class="stats-strip" id="stats-strip">
+          <div class="stat-cell">
+            <div class="stat-algo">RANDOMX</div>
+            <div class="stat-val" id="stat-rx">—</div>
+            <div class="stat-label">DIFFICULTY</div>
+            <svg class="stat-spark" id="spark-rx" viewBox="0 0 100 26" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-algo">PROGPOW</div>
+            <div class="stat-val" id="stat-pp">—</div>
+            <div class="stat-label">DIFFICULTY</div>
+            <svg class="stat-spark" id="spark-pp" viewBox="0 0 100 26" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-algo">SHA256D</div>
+            <div class="stat-val" id="stat-sha">—</div>
+            <div class="stat-label">DIFFICULTY</div>
+            <svg class="stat-spark" id="spark-sha" viewBox="0 0 100 26" preserveAspectRatio="none"></svg>
+          </div>
         </div>
-        <div class="stat-cell">
-          <div class="stat-algo">PROGPOW</div>
-          <div class="stat-val" id="stat-pp">—</div>
-          <div class="stat-label">DIFFICULTY</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-algo">SHA256D</div>
-          <div class="stat-val" id="stat-sha">—</div>
-          <div class="stat-label">DIFFICULTY</div>
-        </div>
-      </div>
+        <div class="stats-cta">VIEW DIFFICULTY CHARTS →</div>
+      </a>
     </div>
   </div>
 </section>
@@ -1154,30 +1251,36 @@
       <div class="software-card">
         <div class="sw-section">
           <div class="sw-algo-label">
-            <span class="sw-dot" style="background:var(--rx)"></span>
-            <span class="sw-algo-name" style="color:var(--rx)">RandomX — CPU</span>
-          </div>
-          <div class="sw-links">
-            <a class="sw-link" href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> xmrig-veil (ohcee fork)
-            </a>
-          </div>
-          <div class="sw-note">Source build required. Windows: build from source or grab artifacts.</div>
-        </div>
-        <div class="sw-section">
-          <div class="sw-algo-label">
             <span class="sw-dot" style="background:var(--pp)"></span>
             <span class="sw-algo-name" style="color:var(--pp)">ProgPoW — GPU</span>
           </div>
           <div class="sw-links">
+            <a class="sw-link" href="https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> Veil-Miner v1.1.3 <span class="badge badge-new">NEW</span>
+            </a>
             <a class="sw-link" href="https://github.com/trexminer/t-rex/releases" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> T-Rex (NVIDIA)
+              <span class="sw-link-arrow">→</span> T-Rex (NVIDIA) <span class="badge badge-backup">BACKUP</span>
             </a>
             <a class="sw-link" href="https://github.com/andru-kun/wildrig-multi/releases/tag/0.40.6" target="_blank" rel="noopener">
-              <span class="sw-link-arrow">→</span> WildRig Multi 0.40.6 (AMD)
+              <span class="sw-link-arrow">→</span> WildRig Multi 0.40.6 (AMD) <span class="badge badge-backup">BACKUP</span>
             </a>
           </div>
-          <div class="sw-note">Use WildRig 0.40.6 specifically — last known working version for AMD.</div>
+          <div class="sw-note">Veil-Miner: prebuilt for Windows, Linux, HiveOS + macOS (Apple Silicon CPU). NVIDIA GTX 900 → RTX 5090, AMD/Intel via OpenCL. Backup AMD: WildRig 0.40.6 specifically.</div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-algo-label">
+            <span class="sw-dot" style="background:var(--rx)"></span>
+            <span class="sw-algo-name" style="color:var(--rx)">RandomX — CPU</span>
+          </div>
+          <div class="sw-links">
+            <a class="sw-link" href="https://github.com/ohcee/Veil-Miner-CPU/releases/tag/v6.25.0-veil-rc1" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> Veil-Miner-CPU rc1 <span class="badge badge-testing">TESTING</span>
+            </a>
+            <a class="sw-link" href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">
+              <span class="sw-link-arrow">→</span> xmrig-veil <span class="badge badge-backup">BACKUP</span>
+            </a>
+          </div>
+          <div class="sw-note">Veil-Miner-CPU: prebuilt binaries for Windows, Linux, macOS. rx/veil only, no dev fee. macOS arm64 confirmed live, Windows/Linux testers wanted. Backup: build xmrig-veil from source.</div>
         </div>
         <div class="sw-section">
           <div class="sw-algo-label">
@@ -1209,75 +1312,65 @@
   </div>
 </main>
 
-<!-- BOTTOM: BUILD + LINKS -->
+<!-- BOTTOM: DOWNLOADS/BUILD + LINKS -->
 <div class="bottom-section">
 
-  <!-- BUILD INSTRUCTIONS -->
-  <div id="build" class="fade-up fade-up-3">
-    <div class="section-label">BUILD INSTRUCTIONS</div>
+  <!-- DOWNLOADS + BUILD INSTRUCTIONS -->
+  <div id="downloads" class="fade-up fade-up-3">
+    <div class="section-label">DOWNLOADS &amp; BUILD</div>
     <div class="build-card">
       <div class="build-tabs">
-        <div class="build-tab active" onclick="showBuildTab('xmrig', this)">XMRIG-VEIL</div>
+        <div class="build-tab active" onclick="showBuildTab('veilminer', this)">VEIL-MINER · GPU</div>
+        <div class="build-tab" onclick="showBuildTab('xmrig', this)">VEIL-MINER-CPU</div>
         <div class="build-tab" onclick="showBuildTab('cpu', this)">CPUMINER</div>
-        <div class="build-tab" onclick="showBuildTab('gpu', this)">GPU (T-REX)</div>
+        <div class="build-tab" onclick="showBuildTab('gpu', this)">GPU BACKUPS</div>
         <div class="build-tab" onclick="showBuildTab('proxy', this)">SOLO PROXY</div>
       </div>
 
-      <div class="build-pane active" id="pane-xmrig">
-        <div class="build-tabs" style="border:none;border-bottom:1px solid var(--border);margin:-1.25rem -1.25rem 1.25rem">
-          <div class="build-tab active" onclick="showOsTab('linux', this)" style="font-size:0.6rem">UBUNTU/LINUX</div>
-          <div class="build-tab" onclick="showOsTab('macos', this)" style="font-size:0.6rem">MACOS</div>
-          <div class="build-tab" onclick="showOsTab('windows', this)" style="font-size:0.6rem">WINDOWS</div>
+      <div class="build-pane active" id="pane-veilminer">
+        <div class="dl-grid">
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner/releases/download/v1.1.3/veilminer-v1.1.3-windows-x64-cuda12.9.zip">⬇ veilminer v1.1.3 <span class="dl-os">WINDOWS x64</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner/releases/download/v1.1.3/veilminer-v1.1.3-linux-x64-cuda12.9.tar.gz">⬇ veilminer v1.1.3 <span class="dl-os">LINUX x64</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner/releases/download/v1.1.3/veilminer-v1.1.3-hiveos-x64.tar.gz">⬇ veilminer v1.1.3 <span class="dl-os">HIVEOS</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner/releases/download/v1.1.3/veilminer-v1.1.3-macos-arm64.tar.gz">⬇ veilminer v1.1.3 <span class="dl-os">MACOS ARM64</span></a>
         </div>
+<pre><span class="cmd-comment"># NVIDIA (GTX 900 series through RTX 5090)</span>
+./veilminer --cuda -P stratum+tcp://YOUR_ADDRESS@veil.yadaminers.pl:3334
 
-        <div id="os-linux">
-<pre><span class="cmd-comment"># Dependencies</span>
-sudo apt install -y git build-essential \
-  cmake libuv1-dev libssl-dev libhwloc-dev
+<span class="cmd-comment"># AMD / Intel (OpenCL)</span>
+./veilminer --opencl -P stratum+tcp://YOUR_ADDRESS@veil.yadaminers.pl:3334
 
-<span class="cmd-comment"># Clone xmrig-veil (not upstream xmrig)</span>
-git clone https://github.com/ohcee/xmrig-veil.git
-mkdir xmrig-veil/build && cd xmrig-veil/build
-cmake ..
-make -j$(nproc)</pre>
+<span class="cmd-comment"># Apple Silicon (CPU mining)</span>
+./veilminer --cpu -P stratum+tcp://YOUR_ADDRESS@veil.yadaminers.pl:3334</pre>
+        <div class="build-pane-note">
+          Pool, wallet and password all ride in the single <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">-P</code> URL — there is no <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">-o -u -p</code>.
+          Windows needs NVIDIA driver 570+ for RTX 50 series; the zip bundles every DLL. Linux also needs the CUDA 12 nvrtc library (<code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">cuda-nvrtc-12-9</code>).
         </div>
-
-        <div id="os-macos" style="display:none">
-<pre><span class="cmd-comment"># Dependencies (Homebrew required)</span>
-brew install cmake libuv openssl hwloc
-
-<span class="cmd-comment"># Clone xmrig-veil (not upstream xmrig)</span>
-git clone https://github.com/ohcee/xmrig-veil.git
-mkdir xmrig-veil/build && cd xmrig-veil/build
-cmake .. -DOPENSSL_ROOT_DIR=$(brew --prefix openssl)
-make -j$(sysctl -n hw.logicalcpu)</pre>
-          <div class="build-pane-note" style="margin-top:0.75rem">Apple Silicon (M1/M2): RandomX JIT runs in slow secure mode — reduced hashrate. CPU affinity and huge pages not supported on ARM macOS.</div>
+        <div class="build-pane-note">
+          <strong>HiveOS flight sheet</strong> — miner: Custom · name: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">veilminer</code> · install URL: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;word-break:break-all">https://github.com/ohcee/Veil-Miner/releases/download/v1.1.3/veilminer-1.1.3.tar.gz</code> · algo: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">progpow-veil</code> · wallet template: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">%WAL%</code> · pool: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">veil.yadaminers.pl:3334</code> · pass: <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">x</code>. Field tested on a five card Ampere rig. Source + build docs: <a href="https://github.com/ohcee/Veil-Miner" target="_blank" rel="noopener">ohcee/Veil-Miner</a>.
         </div>
+      </div>
 
-        <div id="os-windows" style="display:none">
-<pre><span class="cmd-comment"># Option A: MSYS2 (ucrt64 shell)</span>
-pacman -S mingw-w64-ucrt-x86_64-gcc git make
-
-<span class="cmd-comment"># Download xmrig-deps ZIP → extract to C:\xmrig-deps
-# github.com/xmrig/xmrig-deps</span>
-
-git clone https://github.com/ohcee/xmrig-veil.git
-mkdir xmrig-veil\build && cd xmrig-veil\build
-"c:\Program Files\CMake\bin\cmake.exe" .. ^
-  -G "Unix Makefiles" ^
-  -DXMRIG_DEPS=c:/xmrig-deps/gcc/x64
-make -j$(nproc)
-
-<span class="cmd-comment"># Option B: Visual Studio 2022</span>
-git clone https://github.com/ohcee/xmrig-veil.git
-mkdir xmrig-veil\build && cd xmrig-veil\build
-cmake .. -G "Visual Studio 17 2022" -A x64 ^
-  -DXMRIG_DEPS=c:\xmrig-deps\msvc2022\x64
-cmake --build . --config Release</pre>
-          <div class="build-pane-note" style="margin-top:0.75rem">Requires CMake + prebuilt deps from <a href="https://github.com/xmrig/xmrig-deps" target="_blank" rel="noopener" style="color:var(--veil)">xmrig/xmrig-deps</a>. For VS 2022 install "Desktop development with C++" and "C++/CLI support for v143 build tools".</div>
+      <div class="build-pane" id="pane-xmrig">
+        <div class="dl-grid">
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner-CPU/releases/download/v6.25.0-veil-rc1/xmrig-v6.25.0-veil-rc1-windows-x64.zip">⬇ Veil-Miner-CPU rc1 <span class="dl-os">WINDOWS x64</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner-CPU/releases/download/v6.25.0-veil-rc1/xmrig-v6.25.0-veil-rc1-linux-x64.tar.gz">⬇ Veil-Miner-CPU rc1 <span class="dl-os">LINUX x64</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner-CPU/releases/download/v6.25.0-veil-rc1/xmrig-v6.25.0-veil-rc1-macos-arm64.tar.gz">⬇ Veil-Miner-CPU rc1 <span class="dl-os">MACOS ARM64</span></a>
+          <a class="dl-link" href="https://github.com/ohcee/Veil-Miner-CPU/releases/download/v6.25.0-veil-rc1/xmrig-v6.25.0-veil-rc1-macos-x64.tar.gz">⬇ Veil-Miner-CPU rc1 <span class="dl-os">MACOS x64</span></a>
         </div>
+<pre><span class="cmd-comment"># yadaminers (bv or sv address)</span>
+./xmrig -o veil.yadaminers.pl:3335 -a rx/veil -u YOUR_ADDRESS -p x
 
-        <div class="build-pane-note" style="margin-top:0.75rem">Always clone <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener" style="color:var(--veil)">ohcee/xmrig-veil</a> — standard XMRig does not support the VEIL RandomX variant.</div>
+<span class="cmd-comment"># fastpool (bv address only)</span>
+./xmrig -o fastpool.xyz:10281 -a rx/veil -u YOUR_ADDRESS -p x</pre>
+        <div class="build-pane-note">
+          XMRig stripped down to mine Veil only — rx/veil, no dev fee, no other coins in the binary. Checksums in SHA256SUMS.txt on the <a href="https://github.com/ohcee/Veil-Miner-CPU/releases/tag/v6.25.0-veil-rc1" target="_blank" rel="noopener">release page</a>.
+          macOS arm64 already mining live on yadaminers; <strong>Windows and Linux testers wanted</strong> — if something breaks, open an issue with your OS and CPU.
+          On macOS run <code style="font-family:'Share Tech Mono',monospace;font-size:0.72rem">xattr -d com.apple.quarantine xmrig</code> if Gatekeeper complains.
+        </div>
+        <div class="build-pane-note">
+          Backup: build <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">ohcee/xmrig-veil</a> from source (same tree, cmake build — instructions in the repo README). Standard XMRig does <strong>not</strong> support the Veil RandomX variant.
+        </div>
       </div>
 
       <div class="build-pane" id="pane-cpu">
@@ -1292,20 +1385,20 @@ make -j$(nproc)</pre>
       </div>
 
       <div class="build-pane" id="pane-gpu">
-<pre><span class="cmd-comment"># T-Rex — NVIDIA (ProgPoW-Veil)</span>
+<pre><span class="cmd-comment"># T-Rex — NVIDIA backup (ProgPoW-Veil)</span>
 <span class="cmd-comment"># Download latest release from GitHub, then:</span>
 ./t-rex -a progpow-veil \
   -o stratum+tcp://veil.yadaminers.pl:3334 \
   -u YOUR_ADDRESS \
   -p x \
-  --worker rig1
+  -w rig1
 
-<span class="cmd-comment"># WildRig Multi 0.40.6 — AMD (ProgPoW-Veil)</span>
+<span class="cmd-comment"># WildRig Multi 0.40.6 — AMD backup (ProgPoW-Veil)</span>
 ./wildrig -a progpow-veil \
   -o stratum+tcp://veil.yadaminers.pl:3334 \
   -u YOUR_ADDRESS \
   -p x</pre>
-        <div class="build-pane-note">AMD: Use WildRig 0.40.6 specifically — later versions may not work with ProgPoW-Veil.</div>
+        <div class="build-pane-note">These are the previous recommendations, kept as backups — <a href="https://github.com/ohcee/Veil-Miner/releases/tag/v1.1.3" target="_blank" rel="noopener">Veil-Miner</a> is now the first choice. AMD: use WildRig 0.40.6 specifically — later versions may not work with ProgPoW-Veil.</div>
       </div>
 
       <div class="build-pane" id="pane-proxy">
@@ -1329,17 +1422,20 @@ pip install -r requirements.txt
 python3 veilproxy.py -p 5555 \
   -n http://veil:veil@127.0.0.1:5556 -j
 
-<span class="cmd-comment"># 4a. T-Rex ProgPoW (v0.26.6+) — Linux</span>
+<span class="cmd-comment"># 4a. Veil-Miner ProgPoW — Linux</span>
+./veilminer --cuda -P stratum+tcp://x@127.0.0.1:5555
+
+<span class="cmd-comment"># 4b. T-Rex ProgPoW (v0.26.6+) — Linux</span>
 ./t-rex --validate-shares -a progpow-veil \
   --coin veil -o stratum+tcp://127.0.0.1:5555 -u x -p x
 
-<span class="cmd-comment"># 4b. WildRig ProgPoW (v0.32.1+) — Linux</span>
+<span class="cmd-comment"># 4c. WildRig ProgPoW (v0.32.1+) — Linux</span>
 ./wildrig --print-full -a progpow-veil \
   -o 127.0.0.1:5555 -u x -p x
 
-<span class="cmd-comment"># 4c. XMRig RandomX — Linux</span>
-./xmrig -o 127.0.0.1:5555 -u x -p x</pre>
-        <div class="build-pane-note">Username and password for the proxy can be anything — <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">-u x -p x</code> is fine. For Windows replace <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">./</code> with the <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2)">.exe</code> binary name. XMRig must be built from <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener" style="color:var(--veil)">xmrig-veil</a> — standard XMRig does not support VEIL.</div>
+<span class="cmd-comment"># 4d. Veil-Miner-CPU RandomX — Linux</span>
+./xmrig -o 127.0.0.1:5555 -a rx/veil -u x -p x</pre>
+        <div class="build-pane-note">Username and password for the proxy can be anything — <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem">-u x -p x</code> is fine. For Windows replace <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem">./</code> with the <code style="font-family:'Share Tech Mono',monospace;font-size:0.7rem">.exe</code> binary name. RandomX needs <a href="https://github.com/ohcee/Veil-Miner-CPU/releases" target="_blank" rel="noopener">Veil-Miner-CPU</a> or <a href="https://github.com/ohcee/xmrig-veil" target="_blank" rel="noopener">xmrig-veil</a> — standard XMRig does not support Veil.</div>
       </div>
     </div>
   </div>
@@ -1349,6 +1445,13 @@ python3 veilproxy.py -p 5555 \
     <div class="section-label">RESOURCES</div>
     <div class="links-card">
       <div class="links-grid">
+        <a class="ext-link" href="difficulty.html">
+          <span class="ext-link-icon">📈</span>
+          <span class="ext-link-body">
+            <span class="ext-link-name">Difficulty Charts</span>
+            <span class="ext-link-desc">Historical difficulty, all 3 algos</span>
+          </span>
+        </a>
         <a class="ext-link" href="https://veil-info.org" target="_blank" rel="noopener">
           <span class="ext-link-icon">📡</span>
           <span class="ext-link-body">
@@ -1440,46 +1543,62 @@ const POOLS = {
     { label: 'FastPool :10281 (low-end, diff 25k)', value: 'fp10281', host: 'fastpool.xyz', port: '10281', isFastPool: true },
     { label: 'FastPool :10282 (mid-end, diff 100k)', value: 'fp10282', host: 'fastpool.xyz', port: '10282', isFastPool: true },
     { label: 'FastPool :10285 (SSL, diff 25k)', value: 'fp10285', host: 'fastpool.xyz', port: '10285', ssl: true, isFastPool: true },
-    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '5555', solo: true },
   ],
   pp: [
     { label: 'yadaminers  :3334', value: 'yadaminers', host: 'veil.yadaminers.pl', port: '3334' },
-    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '5555', solo: true },
   ],
   sha: [
     { label: 'yadaminers  :3333', value: 'yadaminers', host: 'veil.yadaminers.pl', port: '3333' },
-    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '3333', solo: true },
+    { label: 'SOLO (localhost proxy)', value: 'solo', host: '127.0.0.1', port: '5555', solo: true },
   ],
 };
 
+// workerStyle: how each miner takes a worker name on non-FastPool pools
+//   'rig-id'  → xmrig --rig-id NAME
+//   'dot'     → wallet.NAME as the user / in the -P url
+//   'flag-w'  → t-rex -w NAME
 const MINERS = {
   rx: {
-    linux:   [{ label: 'xmrig-veil', bin: './xmrig' }],
-    macos:   [{ label: 'xmrig-veil', bin: './xmrig' }],
-    windows: [{ label: 'xmrig-veil', bin: 'xmrig.exe' }],
+    linux:   [
+      { label: 'Veil-Miner-CPU (prebuilt · testing)', bin: './xmrig', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (backup · source build)',  bin: './xmrig', workerStyle: 'rig-id' },
+    ],
+    macos:   [
+      { label: 'Veil-Miner-CPU (prebuilt)',           bin: './xmrig', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (backup · source build)',  bin: './xmrig', workerStyle: 'rig-id' },
+    ],
+    windows: [
+      { label: 'Veil-Miner-CPU (prebuilt · testing)', bin: 'xmrig.exe', workerStyle: 'rig-id' },
+      { label: 'xmrig-veil (backup · source build)',  bin: 'xmrig.exe', workerStyle: 'rig-id' },
+    ],
   },
   pp: {
     linux:   [
-      { label: 'T-Rex (NVIDIA)',       bin: './t-rex',    flag: '-a progpow-veil' },
-      { label: 'WildRig 0.40.6 (AMD)', bin: './wildrig',  flag: '-a progpow-veil' },
+      { label: 'Veil-Miner (NVIDIA · CUDA)',       bin: './veilminer', flag: '--cuda',   purl: true, workerStyle: 'dot' },
+      { label: 'Veil-Miner (AMD/Intel · OpenCL)',  bin: './veilminer', flag: '--opencl', purl: true, workerStyle: 'dot' },
+      { label: 'T-Rex (NVIDIA · backup)',          bin: './t-rex',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
+      { label: 'WildRig 0.40.6 (AMD · backup)',    bin: './wildrig',  flag: '-a progpow-veil', workerStyle: 'dot' },
     ],
     macos:   [
-      { label: 'T-Rex (NVIDIA)',       bin: './t-rex',    flag: '-a progpow-veil' },
-      { label: 'WildRig 0.40.6 (AMD)', bin: './wildrig',  flag: '-a progpow-veil' },
+      { label: 'Veil-Miner (Apple Silicon · CPU)', bin: './veilminer', flag: '--cpu', purl: true, workerStyle: 'dot' },
     ],
     windows: [
-      { label: 'T-Rex (NVIDIA)',       bin: 't-rex.exe',    flag: '-a progpow-veil' },
-      { label: 'WildRig 0.40.6 (AMD)', bin: 'wildrig.exe',  flag: '-a progpow-veil' },
+      { label: 'Veil-Miner (NVIDIA · CUDA)',       bin: 'veilminer.exe', flag: '--cuda',   purl: true, workerStyle: 'dot' },
+      { label: 'Veil-Miner (AMD/Intel · OpenCL)',  bin: 'veilminer.exe', flag: '--opencl', purl: true, workerStyle: 'dot' },
+      { label: 'T-Rex (NVIDIA · backup)',          bin: 't-rex.exe',    flag: '-a progpow-veil', workerStyle: 'flag-w' },
+      { label: 'WildRig 0.40.6 (AMD · backup)',    bin: 'wildrig.exe',  flag: '-a progpow-veil', workerStyle: 'dot' },
     ],
   },
   sha: {
-    linux:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d' }],
-    macos:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d' }],
-    windows: [{ label: 'cpuminer-opt-veil', bin: 'cpuminer.exe', flag: '-a sha256d' }],
+    linux:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d', workerStyle: 'dot' }],
+    macos:   [{ label: 'cpuminer-opt-veil', bin: './cpuminer', flag: '-a sha256d', workerStyle: 'dot' }],
+    windows: [{ label: 'cpuminer-opt-veil', bin: 'cpuminer.exe', flag: '-a sha256d', workerStyle: 'dot' }],
   },
 };
 
-// ── ALGO ALGO ─────────────────────────────────────────────────────────────
+// ── ALGO ──────────────────────────────────────────────────────────────────
 function setAlgo(algo) {
   currentAlgo = algo;
   ['rx','pp','sha'].forEach(a => {
@@ -1530,15 +1649,25 @@ function buildCommand() {
   const worker     = document.getElementById('worker-input').value.trim();
   if (!miner) return;
 
-  const proto  = pool.ssl ? 'stratum+ssl' : 'stratum+tcp';
-  const host   = `${proto}://${pool.host}:${pool.port}`;
-  const algo   = currentAlgo === 'rx' ? '-a rx/veil' : (miner.flag || '');
-  const user   = pool.isFastPool
-    ? (worker ? `${wallet}@${worker}` : wallet)
-    : (worker ? `${wallet}` : wallet);
-  const workerPart = (!pool.isFastPool && worker) ? ` --worker ${worker}` : '';
+  const proto = pool.ssl ? 'stratum+ssl' : 'stratum+tcp';
+  let cmd;
 
-  let cmd = `${miner.bin} ${algo} -o ${host} -u ${user} -p x${workerPart}`;
+  if (miner.purl) {
+    // veilminer style: everything in one -P url, worker rides as wallet.worker
+    const user = worker ? `${wallet}.${worker}` : wallet;
+    cmd = `${miner.bin} ${miner.flag} -P ${proto}://${user}@${pool.host}:${pool.port}`;
+  } else {
+    const algo = currentAlgo === 'rx' ? '-a rx/veil' : (miner.flag || '');
+    let user = wallet;
+    let workerPart = '';
+    if (worker) {
+      if (pool.isFastPool)                       user = `${wallet}@${worker}`;
+      else if (miner.workerStyle === 'rig-id')   workerPart = ` --rig-id ${worker}`;
+      else if (miner.workerStyle === 'flag-w')   workerPart = ` -w ${worker}`;
+      else                                       user = `${wallet}.${worker}`;
+    }
+    cmd = `${miner.bin} ${algo} -o ${proto}://${pool.host}:${pool.port} -u ${user} -p x${workerPart}`;
+  }
 
   document.getElementById('output-pre').textContent = cmd;
   document.getElementById('fastpool-formats').classList.toggle('visible', !!pool.isFastPool);
@@ -1556,16 +1685,6 @@ function copyCommand() {
   });
 }
 
-// ── OS TABS (inside xmrig pane) ───────────────────────────────────────────
-function showOsTab(os, el) {
-  ['linux','macos','windows'].forEach(o => {
-    const el2 = document.getElementById('os-' + o);
-    if (el2) el2.style.display = o === os ? 'block' : 'none';
-  });
-  el.parentElement.querySelectorAll('.build-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
-
 // ── BUILD TABS ────────────────────────────────────────────────────────────
 function showBuildTab(id, el) {
   document.querySelectorAll('.build-tab').forEach(t => t.classList.remove('active'));
@@ -1574,7 +1693,7 @@ function showBuildTab(id, el) {
   document.getElementById('pane-' + id).classList.add('active');
 }
 
-// ── LIVE DIFFICULTY ────────────────────────────────────────────────────────
+// ── LIVE DIFFICULTY + SPARKLINES ──────────────────────────────────────────
 async function loadDifficulty() {
   try {
     const res  = await fetch('./data/difficulty.json');
@@ -1595,9 +1714,28 @@ async function loadDifficulty() {
       return v.toFixed(4);
     }
 
+    function spark(svgId, arr, color) {
+      const svg = document.getElementById(svgId);
+      if (!svg || !arr || arr.length < 2) return;
+      const pts = arr.slice(-30).map(p => p.d);
+      const min = Math.min(...pts), max = Math.max(...pts);
+      const span = (max - min) || 1;
+      const coords = pts.map((v, i) => {
+        const x = (i / (pts.length - 1)) * 100;
+        const y = 23 - ((v - min) / span) * 20;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+      svg.innerHTML =
+        `<polyline points="${coords.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
+    }
+
     document.getElementById('stat-rx').textContent  = fmt(lastVal(data.randomx));
     document.getElementById('stat-pp').textContent  = fmt(lastVal(data.progpow));
     document.getElementById('stat-sha').textContent = fmt(lastVal(data.sha256d));
+
+    spark('spark-rx',  data.randomx, '#00838f');
+    spark('spark-pp',  data.progpow, '#7b1fa2');
+    spark('spark-sha', data.sha256d, '#c62828');
   } catch (e) {
     // difficulty.json missing or API unreachable — silently leave dashes
   }
